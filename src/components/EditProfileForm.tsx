@@ -4,8 +4,7 @@
 
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Item } from 'react-stately';
-import { AtSign, BuildingBusinessOffice, Bullhorn, Heart, Other, Phone, Profile, WorldNet } from '@/svg_components';
+import { AtSign, BuildingBusinessOffice, Bullhorn, Phone, Profile, WorldNet } from '@/svg_components';
 import { UserAboutSchema, userAboutSchema } from '@/lib/validations/userAbout';
 import { formatISO } from 'date-fns';
 import { parseDate } from '@internationalized/date';
@@ -16,7 +15,6 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { GenericLoading } from './GenericLoading';
 import { DatePicker } from './ui/DatePicker';
 import { Textarea } from './ui/Textarea';
-import { Select } from './ui/Select';
 import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
 
@@ -32,8 +30,6 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
       bio: userData?.bio || null,
       website: userData?.website || null,
       address: userData?.address || null,
-      gender: userData?.gender || null,
-      relationshipStatus: userData?.relationshipStatus || null,
       birthDate: userData?.birthDate?.toString() || null,
     }),
     [userData],
@@ -193,49 +189,6 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
                 ref={ref}
                 Icon={BuildingBusinessOffice}
               />
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="gender"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <Select
-                label="Gender"
-                name="gender"
-                selectedKey={value || null}
-                onSelectionChange={(key) => onChange(key || null)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={Other}>
-                <Item key="MALE">Male</Item>
-                <Item key="FEMALE">Female</Item>
-                <Item key="NONBINARY">Nonbinary</Item>
-              </Select>
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="relationshipStatus"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <Select
-                label="Relationship Status"
-                name="relationshipStatus"
-                selectedKey={value || null}
-                onSelectionChange={(key) => onChange(key || null)}
-                errorMessage={error?.message}
-                Icon={Heart}
-                ref={ref}>
-                <Item key="SINGLE">Single</Item>
-                <Item key="IN_A_RELATIONSHIP">In a relationship</Item>
-                <Item key="ENGAGED">Enganged</Item>
-                <Item key="MARRIED">Married</Item>
-              </Select>
             </div>
           )}
         />

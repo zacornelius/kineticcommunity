@@ -1,6 +1,5 @@
-import { Feather } from '@/svg_components';
-import { LogoText } from '@/components/LogoText';
 import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
 import { HomeMobileDropdownMenu } from './HomeMobileDropdownMenu';
 
@@ -19,8 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="flex items-center justify-between px-4 sm:px-0">
           <Link href="/" title="Home page">
             <div className="flex cursor-pointer flex-row items-center justify-center gap-2 sm:pr-5">
-              <Feather className="stroke-primary" width={32} height={32} />
-              <LogoText className="text-2xl" />
+              <Image src="/logo.png" alt="Logo" width={327} height={39} className="h-4 w-auto" style={{ objectFit: 'contain' }} />
             </div>
           </Link>
           <div className="hidden gap-3 sm:flex">

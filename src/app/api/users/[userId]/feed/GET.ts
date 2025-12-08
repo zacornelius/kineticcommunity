@@ -1,7 +1,7 @@
 /**
  * GET /api/users/:userId/feed
  * - Allows an authenticated user to retrieve the most recent posts
- * posted by the user and their followed users.
+ * from all users in the community (community mode - everyone sees everyone).
  */
 
 import { usePostsSorter } from '@/hooks/usePostsSorter';
@@ -18,22 +18,11 @@ export async function GET(request: Request, { params }: { params: { userId: stri
   const [user] = await getServerUser();
   if (!user || params.userId !== user.id) return NextResponse.json({}, { status: 401 });
 
-  // Get the IDs of the user's followed users
-  const following = await prisma.follow.findMany({
-    where: {
-      followerId: user.id,
-    },
-    select: {
-      followingId: true,
-    },
-  });
-  const followingIds = following.map((u) => u.followingId);
-
+  // Community mode: Show all posts from all users (not just followed users)
+  // This creates a community feed where everyone sees everyone's posts
   const res = await prisma.post.findMany({
     where: {
-      userId: {
-        in: [...followingIds, user.id],
-      },
+      // Show all posts - no filtering by following
       ...filters,
     },
     ...limitAndOrderBy,

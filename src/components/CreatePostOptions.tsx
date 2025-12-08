@@ -24,7 +24,21 @@ export const CreatePostOptions = forwardRef<
     },
     [forwardedRef],
   );
-  const onUploadImageOrVideoPress = useCallback(() => localRef.current?.click(), []); // eslint-disable-line react-hooks/exhaustive-deps
+  
+  const onUploadImageOrVideoPress = useCallback((e: any) => {
+    // Prevent any default behavior that might interfere
+    e?.preventDefault?.();
+    
+    // Use a small delay to ensure the button click event completes
+    // before triggering the file input
+    setTimeout(() => {
+      if (localRef.current) {
+        // Ensure the input is ready and focused
+        localRef.current.focus();
+        localRef.current.click();
+      }
+    }, 0);
+  }, []);
 
   return (
     <div className="flex flex-row justify-center gap-6 px-4 pb-5 sm:justify-start">

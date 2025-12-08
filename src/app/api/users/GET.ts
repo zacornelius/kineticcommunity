@@ -51,9 +51,10 @@ export async function GET(request: Request) {
           },
         },
       }),
-      id: {
-        not: user?.id,
-      },
+      // Allow users to search for themselves in discover
+      // id: {
+      //   not: user?.id,
+      // },
       name: {
         not: null,
       },

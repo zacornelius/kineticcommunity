@@ -33,11 +33,28 @@ export const {
       maxAge: 24 * 60 * 60,
       options: {},
       async sendVerificationRequest({ identifier: email, url }) {
-        const sendEmailCommand = createSendEmailCommand(
-          email,
-          'noreply@norcio.dev',
-          'Login To Munia',
-          `<body>
+        // For local development, log the magic link to console
+        const isDev = process.env.NODE_ENV === 'development';
+        const hasDummySES = process.env.SES_ACCESS_KEY_ID === 'dummy';
+        
+        if (isDev || hasDummySES) {
+          // Use console.error to ensure it shows up in logs (stderr is more visible)
+          console.error('\n═══════════════════════════════════════════════════════════');
+          console.error('📧 EMAIL LOGIN - Magic Link for local development:');
+          console.error(`   Email: ${email}`);
+          console.error(`   Login URL: ${url}`);
+          console.error('   (Copy and paste this URL in your browser to log in)');
+          console.error('═══════════════════════════════════════════════════════════\n');
+          return;
+        }
+
+        // Production: Send email via SES
+        try {
+          const sendEmailCommand = createSendEmailCommand(
+            email,
+            'noreply@norcio.dev',
+            'Login To Munia',
+            `<body>
   <table width="100%" border="0" cellspacing="20" cellpadding="0"
     style=" max-width: 600px; margin: auto; border-radius: 10px;">
     <tr>
@@ -65,8 +82,12 @@ export const {
     </tr>
   </table>
 </body>`,
-        );
-        await sesClient.send(sendEmailCommand);
+          );
+          await sesClient.send(sendEmailCommand);
+        } catch (error) {
+          console.error('Failed to send email:', error);
+          throw new Error('Failed to send verification email');
+        }
       },
     },
   ],

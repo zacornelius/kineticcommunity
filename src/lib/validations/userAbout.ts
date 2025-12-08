@@ -19,10 +19,6 @@ export const userAboutSchema = z.object({
     })
     .nullable(),
   address: nonEmptyString.nullable(),
-  gender: z.union([z.literal('FEMALE'), z.literal('MALE'), z.literal('NONBINARY')]).nullable(),
-  relationshipStatus: z
-    .union([z.literal('SINGLE'), z.literal('IN_A_RELATIONSHIP'), z.literal('ENGAGED'), z.literal('MARRIED')])
-    .nullable(),
   birthDate: z.nullable(
     z.string().superRefine((value, ctx) => {
       const today = new Date();

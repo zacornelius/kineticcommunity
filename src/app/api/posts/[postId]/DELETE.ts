@@ -14,20 +14,29 @@ export async function DELETE(request: Request, { params }: { params: { postId: s
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
-  // Delete the `post` and the associated `visualMedia` from the database
-  const res = await prisma.post.delete({
-    select: {
-      id: true,
-      visualMedia: true,
-    },
-    where: {
-      id: postId,
-    },
-  });
+  try {
+    // Delete the `post` and the associated `visualMedia` from the database
+    const res = await prisma.post.delete({
+      select: {
+        id: true,
+        visualMedia: true,
+      },
+      where: {
+        id: postId,
+      },
+    });
 
-  // Delete the associated `visualMedia` files from the S3 bucket
-  const filenames = res.visualMedia.map((m) => m.fileName);
-  await Promise.all(filenames.map(deleteObject));
+    // Delete the associated `visualMedia` files from the S3 bucket
+    const filenames = res.visualMedia.map((m) => m.fileName);
+    await Promise.all(filenames.map(deleteObject));
 
-  return NextResponse.json({ id: res.id });
+    return NextResponse.json({ id: res.id });
+  } catch (error: unknown) {
+    // Handle case where post doesn't exist
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+    // Re-throw other errors
+    throw error;
+  }
 }

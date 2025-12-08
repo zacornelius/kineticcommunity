@@ -57,6 +57,7 @@ model User {
   sessions           Session[]
   profilePhoto       String?
   coverPhoto         String?
+  isAdmin            Boolean             @default(false)
   post               Post[]
   visualMedia        VisualMedia[]
   postLikes          PostLike[]

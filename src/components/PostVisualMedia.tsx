@@ -1,7 +1,6 @@
 import { cn } from '@/lib/cn';
-import { Play } from '@/svg_components';
 import { VisualMediaType } from '@prisma/client';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { mergeProps, useFocusRing, usePress } from 'react-aria';
 
 export function PostVisualMedia({
@@ -17,18 +16,27 @@ export function PostVisualMedia({
   height: string;
   colSpan: number;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const { pressProps, isPressed } = usePress({
     onPress: onClick,
   });
   const { focusProps, isFocusVisible } = useFocusRing();
   const style = useMemo(() => ({ height }), [height]);
+  
+  // Stop event propagation when interacting with video controls
+  // This prevents the modal from opening when clicking play/pause/volume etc.
+  const handleVideoInteraction = (e: React.MouseEvent<HTMLVideoElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <div
-      {...mergeProps(pressProps, focusProps)}
-      role="button"
-      tabIndex={0}
+      {...mergeProps(type === 'PHOTO' ? pressProps : {}, focusProps)}
+      role={type === 'PHOTO' ? 'button' : undefined}
+      tabIndex={type === 'PHOTO' ? 0 : undefined}
       className={cn(
-        'group relative cursor-pointer focus:outline-none',
+        'group relative focus:outline-none',
+        type === 'PHOTO' && 'cursor-pointer',
         colSpan === 1 ? 'col-span-1' : 'col-span-2',
         isFocusVisible && 'border-4 border-violet-500',
       )}
@@ -36,18 +44,18 @@ export function PostVisualMedia({
       {type === 'PHOTO' ? (
         <img src={url} alt="" className={cn('h-full w-full object-cover', isPressed && 'brightness-75')} />
       ) : (
-        <>
-          <Play
-            width={72}
-            height={72}
-            className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] stroke-violet-100 transition-transform group-hover:scale-125"
-          />
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video className="h-full w-full object-cover">
-            <source src={url} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </>
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <video
+          ref={videoRef}
+          className="h-full w-full object-cover"
+          controls
+          playsInline
+          onClick={handleVideoInteraction}
+          onDoubleClick={onClick}
+          title="Double-click to open in fullscreen modal">
+          <source src={url} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       )}
     </div>
   );

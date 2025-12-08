@@ -9,20 +9,31 @@ import React, { SVGProps, useCallback, useEffect } from 'react';
 import { Badge } from './ui/Badge';
 import { ButtonNaked } from './ui/ButtonNaked';
 
+const brandColorClasses = {
+  'brand-green': 'bg-brand-green',
+  'brand-purple': 'bg-brand-purple',
+  'brand-red': 'bg-brand-red',
+  'brand-orange': 'bg-brand-orange',
+  'brand-blue': 'bg-brand-blue',
+} as const;
+
 export function MenuBarItem({
   children,
   Icon,
   route,
   badge,
+  brandColor,
 }: {
   children: React.ReactNode;
   Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   route: string;
   badge?: number;
+  brandColor?: keyof typeof brandColorClasses;
 }) {
   const router = useRouter();
   const [isActive] = useActiveRouteChecker(route);
   const { confirm } = useDialogs();
+  const barColorClass = brandColor ? brandColorClasses[brandColor] : 'bg-primary';
 
   const onItemClick = useCallback(() => {
     if (route === '/api/auth/signout') {
@@ -44,18 +55,20 @@ export function MenuBarItem({
   return (
     <ButtonNaked
       aria-label={children as string}
-      className="group relative flex h-14 flex-1 cursor-pointer flex-row items-center justify-center px-4 hover:bg-primary-accent/30 md:mt-2 md:flex-none md:rounded-lg md:last:mt-auto"
+      className="group relative flex h-14 flex-1 cursor-pointer flex-row items-center justify-center px-4 hover:bg-muted/50 md:mt-2 md:flex-none md:rounded-lg md:last:mt-auto"
       onPress={onItemClick}>
       <div
         className={cn(
-          'absolute left-0 hidden h-10 w-[4px] origin-bottom scale-y-0 rounded-r-lg bg-primary transition-transform group-hover:origin-top group-hover:scale-y-100 md:block',
+          'absolute left-0 hidden h-10 w-[4px] origin-bottom scale-y-0 rounded-r-lg transition-transform group-hover:origin-top group-hover:scale-y-100 md:block',
           isActive && 'scale-y-100',
+          barColorClass,
         )}
       />
       <div
         className={cn(
-          'absolute bottom-0 h-[4px] w-[70%] scale-x-0 rounded-t-lg bg-primary transition-transform group-hover:scale-x-100 md:hidden',
+          'absolute bottom-0 h-[4px] w-[70%] scale-x-0 rounded-t-lg transition-transform group-hover:scale-x-100 md:hidden',
           isActive && 'scale-x-100',
+          barColorClass,
         )}
       />
       <div className="relative md:mr-3">

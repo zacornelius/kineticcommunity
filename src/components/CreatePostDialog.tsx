@@ -36,17 +36,33 @@ export function CreatePostDialog({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleVisualMediaChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(async (e) => {
-    const { files } = e.target;
+    const input = e.target;
+    const { files } = input;
 
-    if (files === null) return;
-    const filesArr = [...files];
+    if (files === null || files.length === 0) {
+      return;
+    }
+    
+    // Store files array immediately before any async operations
+    const filesArr = Array.from(files);
+    
     const selectedVisualMedia: GetVisualMedia[] = filesArr.map((file) => ({
       type: file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO',
       url: URL.createObjectURL(file),
     }));
+    
     setVisualMedia((prev) => [...prev, ...selectedVisualMedia]);
-    // Clear the file input
-    e.target.value = '';
+    
+    // Clear the file input after a brief delay to ensure the change event completes
+    // This allows selecting the same file again
+    setTimeout(() => {
+      if (input) {
+        input.value = '';
+      }
+      if (inputFileRef.current) {
+        inputFileRef.current.value = '';
+      }
+    }, 10);
   }, []);
 
   const handleClickPostButton = useCallback(() => {
@@ -98,7 +114,9 @@ export function CreatePostDialog({
 
   useEffect(() => {
     if (inputFileRef.current === null) return;
-    if (shouldOpenFileInputOnMount) inputFileRef.current.click();
+    if (shouldOpenFileInputOnMount) {
+      inputFileRef.current.click();
+    }
   }, [shouldOpenFileInputOnMount]);
 
   useEffect(() => {

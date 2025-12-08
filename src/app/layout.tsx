@@ -23,7 +23,7 @@ export const metadata = {
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   return (
-    <html lang="en" className="dark overflow-y-scroll">
+    <html lang="en" className="overflow-y-scroll">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
       </head>

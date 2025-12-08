@@ -1,0 +1,113 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { GenericLoading } from './GenericLoading';
+import { ProfilePhoto } from './ui/ProfilePhoto';
+
+interface User {
+  id: string;
+  username: string | null;
+  name: string | null;
+  email: string | null;
+  profilePhoto: string | null;
+  isAdmin: boolean;
+  _count: {
+    post: number;
+    comments: number;
+    followers: number;
+    following: number;
+  };
+}
+
+interface AdminUserListProps {
+  searchQuery: string;
+  onUserSelect: (userId: string) => void;
+  selectedUserId: string | null;
+}
+
+export function AdminUserList({ searchQuery, onUserSelect, selectedUserId }: AdminUserListProps) {
+  const [offset, setOffset] = useState(0);
+  const limit = 20;
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['admin-users', searchQuery, offset],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        offset: offset.toString(),
+      });
+      if (searchQuery) {
+        params.append('search', searchQuery);
+      }
+      const res = await fetch(`/api/admin/users?${params.toString()}`);
+      if (!res.ok) throw new Error('Failed to fetch users');
+      return res.json() as Promise<{ users: User[]; total: number; limit: number; offset: number }>;
+    },
+    enabled: true,
+  });
+
+  if (isLoading) return <GenericLoading>Loading users...</GenericLoading>;
+  if (error) return <div className="text-destructive">Error loading users</div>;
+
+  const users = data?.users || [];
+  const total = data?.total || 0;
+
+  return (
+    <div className="space-y-2">
+      <div className="text-sm text-muted-foreground mb-4">
+        Showing {users.length} of {total} users
+      </div>
+      <div className="space-y-2 max-h-[600px] overflow-y-auto">
+        {users.map((user) => (
+          <button
+            key={user.id}
+            onClick={() => onUserSelect(user.id)}
+            className={`w-full text-left p-4 rounded-lg border transition-colors ${
+              selectedUserId === user.id
+                ? 'bg-primary/10 border-primary'
+                : 'bg-card border-border hover:bg-muted/50'
+            }`}>
+            <div className="flex items-center gap-3">
+              <ProfilePhoto
+                name={user.name || user.username || 'User'}
+                username={user.username || user.id}
+                photoUrl={user.profilePhoto}
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold truncate">{user.name || user.username || 'No name'}</p>
+                  {user.isAdmin && (
+                    <span className="px-2 py-0.5 text-xs bg-brand-red text-white rounded">Admin</span>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground truncate">@{user.username || user.id}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                  <span>{user._count.post} posts</span>
+                  <span>{user._count.comments} comments</span>
+                  <span>{user._count.followers} followers</span>
+                </div>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-2 mt-4">
+        <button
+          onClick={() => setOffset(Math.max(0, offset - limit))}
+          disabled={offset === 0}
+          className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary-accent">
+          Previous
+        </button>
+        <button
+          onClick={() => setOffset(offset + limit)}
+          disabled={offset + limit >= total}
+          className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary-accent">
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+

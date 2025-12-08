@@ -10,51 +10,63 @@
     --card-foreground: 60 0 119;
     --popover: 251 251 254;
     --popover-foreground: 34 0 74;
-    --primary: 136 0 202;
+    --primary: 5 133 200;
     --primary-foreground: 250 240 255;
-    --primary-accent: 163 0 241;
+    --primary-accent: 58 173 73;
     --secondary: 237 238 243;
     --secondary-foreground: 77 81 104;
     --secondary-accent: 225 227 238;
     --muted: 204 208 222;
     --muted-foreground: 77 81 104;
-    --accent: 125 11 239;
+    --accent: 154 87 162;
     --accent-foreground: 249 242 255;
-    --success: 244 252 246;
-    --success-foreground: 65 176 87;
-    --warning: 255 253 238;
-    --warning-foreground: 244 197 25;
-    --destructive: 255 246 250;
-    --destructive-foreground: 246 100 157;
+    --success: 58 173 73;
+    --success-foreground: 221 242 225;
+    --warning: 240 149 32;
+    --warning-foreground: 255 253 238;
+    --destructive: 212 39 45;
+    --destructive-foreground: 255 246 250;
     --border: 241 224 253;
     --input: 238 239 249;
     --ring: 1rem;
+    /* Brand colors */
+    --brand-green: 58 173 73;
+    --brand-purple: 154 87 162;
+    --brand-red: 212 39 45;
+    --brand-orange: 240 149 32;
+    --brand-blue: 5 133 200;
   }
   .dark {
-    --background: 16 0 35;
+    --background: 33 30 32;
     --foreground: 251 243 255;
-    --card: 35 27 56;
-    --card-foreground: 231 206 255;
-    --popover: 24 31 41;
+    --card: 40 37 39;
+    --card-foreground: 251 243 255;
+    --popover: 40 37 39;
     --popover-foreground: 251 251 254;
-    --primary: 177 58 255;
+    --primary: 5 133 200;
     --primary-foreground: 250 240 255;
-    --primary-accent: 169 38 255;
-    --secondary: 40 42 54;
+    --primary-accent: 58 173 73;
+    --secondary: 50 47 49;
     --secondary-foreground: 204 208 222;
-    --secondary-accent: 50 52 66;
-    --muted: 77 81 104;
-    --muted-foreground: 204 208 222;
-    --accent: 94 0 156;
+    --secondary-accent: 60 57 59;
+    --muted: 60 57 59;
+    --muted-foreground: 180 180 185;
+    --accent: 154 87 162;
     --accent-foreground: 249 242 255;
-    --success: 8 113 29;
+    --success: 58 173 73;
     --success-foreground: 221 242 225;
-    --warning: 244 197 25;
+    --warning: 240 149 32;
     --warning-foreground: 255 253 238;
-    --destructive: 246 100 157;
+    --destructive: 212 39 45;
     --destructive-foreground: 255 246 250;
-    --border: 57 49 75;
-    --input: 57 49 75;
+    --border: 60 57 59;
+    --input: 60 57 59;
+    /* Brand colors */
+    --brand-green: 58 173 73;
+    --brand-purple: 154 87 162;
+    --brand-red: 212 39 45;
+    --brand-orange: 240 149 32;
+    --brand-blue: 5 133 200;
   }
 
   /* width */

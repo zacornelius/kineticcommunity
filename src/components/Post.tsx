@@ -17,6 +17,11 @@ import { PostVisualMediaContainer } from './PostVisualMediaContainer';
 import ProfileBlock from './ProfileBlock';
 import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
 import { PostOptions } from './PostOptions';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { Download, Delete as DeleteIcon } from '@/svg_components';
+import { useDeletePostMutation } from '@/hooks/mutations/useDeletePostMutation';
+import { useDialogs } from '@/hooks/useDialogs';
+import Button from './ui/Button';
 
 export const Post = memo(
   ({
@@ -29,6 +34,9 @@ export const Post = memo(
     const { data: session } = useSession();
     const userId = session?.user?.id;
     const { likeMutation, unLikeMutation } = usePostLikesMutations({ postId });
+    const { isAdmin } = useIsAdmin();
+    const { deleteMutation } = useDeletePostMutation();
+    const { confirm } = useDialogs();
 
     const { data, isPending, isError } = useQuery<GetPost>({
       queryKey: ['posts', postId],
@@ -57,6 +65,38 @@ export const Post = memo(
     const handleCommentsToggle = useCallback(() => {
       toggleComments(postId);
     }, [postId, toggleComments]);
+
+    const handleDownloadPost = useCallback(() => {
+      if (!data || !data.visualMedia || data.visualMedia.length === 0) {
+        alert('This post has no media files to download');
+        return;
+      }
+
+      // Download each media file
+      data.visualMedia.forEach((media, index) => {
+        const link = document.createElement('a');
+        link.href = `/api/posts/${postId}/download?index=${index}`;
+        link.download = media.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Add a small delay between downloads to avoid browser blocking
+        if (index < data.visualMedia.length - 1) {
+          setTimeout(() => {}, 100);
+        }
+      });
+    }, [postId, data]);
+
+    const handleAdminDelete = useCallback(() => {
+      confirm({
+        title: 'Delete Post (Admin)',
+        message: 'Do you really wish to delete this post as an admin?',
+        onConfirm: () => {
+          setTimeout(() => deleteMutation.mutate({ postId }), 300);
+        },
+      });
+    }, [confirm, deleteMutation, postId]);
     const variants = useMemo(
       () => ({
         animate: {
@@ -89,7 +129,25 @@ export const Post = memo(
             time={formatDistanceStrict(new Date(createdAt), new Date())}
             photoUrl={author.profilePhoto!}
           />
-          {isOwnPost && <PostOptions postId={postId} content={content} visualMedia={visualMedia} />}
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <>
+                <Button
+                  onPress={handleDownloadPost}
+                  Icon={Download}
+                  mode="ghost"
+                  aria-label="Download post"
+                />
+                <Button
+                  onPress={handleAdminDelete}
+                  Icon={DeleteIcon}
+                  mode="ghost"
+                  aria-label="Delete post (admin)"
+                />
+              </>
+            )}
+            {isOwnPost && <PostOptions postId={postId} content={content} visualMedia={visualMedia} />}
+          </div>
         </div>
         {content && (
           <p className="mb-4 mt-5 text-lg text-muted-foreground">

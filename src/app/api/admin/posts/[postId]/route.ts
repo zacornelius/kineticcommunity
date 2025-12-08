@@ -1,0 +1,2 @@
+export { DELETE } from './DELETE';
+

@@ -21,6 +21,8 @@ export function PostVisualMediaContainer({ visualMedia }: { visualMedia: GetVisu
         visualMedia.map((item, i) => {
           // Only display four images.
           if (i > 3) return false;
+          // For videos, onClick opens modal (for fullscreen view on double-click)
+          // For photos, onClick opens modal (for zoom/view)
           return (
             <PostVisualMedia
               key={item.url}

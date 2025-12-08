@@ -37,10 +37,9 @@ export function ThemeContextProvider({ children }: { children: React.ReactNode }
   const value = useMemo(() => ({ theme, handleThemeChange }), [theme, handleThemeChange]);
 
   useEffect(() => {
-    // Defaults to 'system' if there's no saved theme
-    const savedTheme = (localStorage.getItem(LS_THEME_KEY) || 'system') as Themes;
-    handleThemeChange(savedTheme);
-  }, [handleThemeChange]);
+    // Force light mode always
+    setToLightTheme();
+  }, [setToLightTheme]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

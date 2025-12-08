@@ -4,8 +4,11 @@ import { ProfileActionButtons } from '@/components/ProfileActionButtons';
 import { GetUser } from '@/types/definitions';
 import { useUserQuery } from '@/hooks/queries/useUserQuery';
 import Link from 'next/link';
-import { Ellipse } from '@/svg_components';
+import { Ellipse, LogOutCircle } from '@/svg_components';
 import { ButtonLink } from '@/components/ui/ButtonLink';
+import Button from '@/components/ui/Button';
+import { useDialogs } from '@/hooks/useDialogs';
+import { signOut } from 'next-auth/react';
 import Tabs from './Tabs';
 import CoverPhoto from './CoverPhoto';
 import ProfilePhoto from './ProfilePhoto';
@@ -18,9 +21,18 @@ export function ProfileHeader({
   initialProfileData: GetUser;
 }) {
   const { data } = useUserQuery(initialProfileData.id);
+  const { confirm } = useDialogs();
   // If there is no query of the user data yet, use the
   // `initialProfileData` that was fetched on server.
   const profile = data || initialProfileData;
+
+  const handleLogout = () => {
+    confirm({
+      title: 'Confirm Logout',
+      message: 'Do you really wish to logout?',
+      onConfirm: () => signOut({ callbackUrl: '/' }),
+    });
+  };
 
   return (
     <>
@@ -29,11 +41,20 @@ export function ProfileHeader({
           <CoverPhoto isOwnProfile={isOwnProfile} photoUrl={profile.coverPhoto} />
         </div>
         <ProfilePhoto isOwnProfile={isOwnProfile} photoUrl={profile.profilePhoto} name={initialProfileData.name!} />
-        <div className="absolute -bottom-20 right-2 md:right-0">
+        <div className="absolute -bottom-20 right-2 flex gap-2 md:right-0">
           {isOwnProfile ? (
-            <ButtonLink shape="pill" mode="subtle" href="/edit-profile">
-              Edit Profile
-            </ButtonLink>
+            <>
+              <ButtonLink shape="pill" mode="subtle" href="/edit-profile">
+                Edit Profile
+              </ButtonLink>
+              <Button
+                Icon={LogOutCircle}
+                onPress={handleLogout}
+                mode="subtle"
+                shape="pill"
+                aria-label="Logout"
+              />
+            </>
           ) : (
             <ProfileActionButtons targetUserId={profile.id} />
           )}

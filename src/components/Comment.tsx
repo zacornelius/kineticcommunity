@@ -19,6 +19,8 @@ import Button from './ui/Button';
 import { CommentReplies } from './CommentReplies';
 import { CommentContent } from './CommentContent';
 import { ToggleStepper } from './ui/ToggleStepper';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { Delete as DeleteIcon } from '@/svg_components';
 
 export const Comment = memo(
   ({
@@ -39,10 +41,11 @@ export const Comment = memo(
   }) => {
     const numberOfLikes = _count.commentLikes;
     const numberOfReplies = _count.replies;
-    const { prompt } = useDialogs();
+    const { prompt, confirm } = useDialogs();
     const { createReplyMutation } = useCreateCommentMutations();
     const { handleEdit, handleDelete } = useUpdateDeleteComments({ queryKey });
     const { likeComment, unLikeComment } = useLikeUnlikeComments({ queryKey });
+    const { isAdmin } = useIsAdmin();
 
     const searchParams = useSearchParams();
     // Highlight comment if the `commentId` is equal to the `comment-id` search param
@@ -85,6 +88,16 @@ export const Comment = memo(
       [commentId, content, handleDelete, handleEdit],
     );
 
+    const handleAdminDelete = useCallback(() => {
+      confirm({
+        title: 'Delete Comment (Admin)',
+        message: 'Do you really wish to delete this comment as an admin?',
+        onConfirm: () => {
+          setTimeout(() => handleDelete({ commentId }), 300);
+        },
+      });
+    }, [confirm, handleDelete, commentId]);
+
     // Show the replies if the comment to be highlighted is a reply to this comment
     useEffect(() => {
       setTimeout(() => {
@@ -118,7 +131,16 @@ export const Comment = memo(
               mode="ghost"
             />
 
-            {isOwnComment && (
+            {isAdmin && (
+              <Button
+                onPress={handleAdminDelete}
+                Icon={DeleteIcon}
+                mode="ghost"
+                aria-label="Delete comment (admin)"
+              />
+            )}
+
+            {isOwnComment && !isAdmin && (
               <DropdownMenuButton
                 key={`comments-${commentId}-options`}
                 label="Comment options"

@@ -35,6 +35,11 @@ module.exports = {
           'rgba(var(--destructive-foreground) / <alpha-value>)',
         border: 'rgba(var(--border) / <alpha-value>)',
         input: 'rgba(var(--input) / <alpha-value>)',
+        'brand-green': 'rgba(var(--brand-green) / <alpha-value>)',
+        'brand-purple': 'rgba(var(--brand-purple) / <alpha-value>)',
+        'brand-red': 'rgba(var(--brand-red) / <alpha-value>)',
+        'brand-orange': 'rgba(var(--brand-orange) / <alpha-value>)',
+        'brand-blue': 'rgba(var(--brand-blue) / <alpha-value>)',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

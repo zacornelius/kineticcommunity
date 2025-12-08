@@ -8,4 +8,8 @@ export const s3Client = new S3Client({
     accessKeyId: process.env.S3_ACCESS_KEY_ID as string,
     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
   },
+  // Force path-style addressing to avoid redirect issues
+  forcePathStyle: false,
+  // The SDK should automatically follow redirects, but we can be explicit
+  followRedirects: true,
 });
