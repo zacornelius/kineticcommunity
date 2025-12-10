@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
+  output: 'standalone', // Enable standalone output for Docker
   images: {
     remotePatterns: [
       {

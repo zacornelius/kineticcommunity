@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - SHADOW_DATABASE_URL=${SHADOW_DATABASE_URL}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - URL=${URL}
+      - AWS_REGION=${AWS_REGION}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_CANONICAL_USER_ID=${S3_CANONICAL_USER_ID}
+      - SES_ACCESS_KEY_ID=${SES_ACCESS_KEY_ID}
+      - SES_SECRET_ACCESS_KEY=${SES_SECRET_ACCESS_KEY}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL}
+      - NEXT_PUBLIC_VAPID_PUBLIC_KEY=${NEXT_PUBLIC_VAPID_PUBLIC_KEY}
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - db
+    command: sh -c "npx prisma migrate deploy && node server.js"
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-kineticcommunity}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
