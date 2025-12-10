@@ -32,11 +32,18 @@ export async function mentionsActivityLogger({
   if (!usersMentioned) return;
 
   const usersMentionedIds = usersMentioned.map(({ id }) => id);
-  await Promise.all(
+  const activities = await Promise.all(
     usersMentionedIds.map((id) =>
       prisma.activity.create({
         data: { ...activity, targetUserId: id },
       }),
     ),
   );
+
+  // Send push notifications for mentions (non-blocking)
+  import('./push/sendPushForActivity').then(({ sendPushForActivity }) => {
+    activities.forEach((activity) => {
+      sendPushForActivity(activity.id).catch(console.error);
+    });
+  });
 }

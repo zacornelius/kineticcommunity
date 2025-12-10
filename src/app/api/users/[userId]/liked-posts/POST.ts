@@ -50,7 +50,7 @@ export async function POST(request: Request, { params }: { params: { userId: str
     },
   });
   if (postOwner) {
-    await prisma.activity.create({
+    const activity = await prisma.activity.create({
       data: {
         type: 'POST_LIKE',
         sourceId: res.id,
@@ -58,6 +58,11 @@ export async function POST(request: Request, { params }: { params: { userId: str
         targetId: postId,
         targetUserId: postOwner?.userId,
       },
+    });
+
+    // Send push notification (non-blocking)
+    import('@/lib/push/sendPushForActivity').then(({ sendPushForActivity }) => {
+      sendPushForActivity(activity.id).catch(console.error);
     });
   }
 

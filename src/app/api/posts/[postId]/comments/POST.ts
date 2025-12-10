@@ -49,7 +49,7 @@ export async function POST(request: Request, { params }: { params: { postId: str
       },
     });
     if (post) {
-      await prisma.activity.create({
+      const activity = await prisma.activity.create({
         data: {
           type: 'CREATE_COMMENT',
           sourceId: res.id,
@@ -57,6 +57,11 @@ export async function POST(request: Request, { params }: { params: { postId: str
           targetId: postId,
           targetUserId: post.userId,
         },
+      });
+
+      // Send push notification (non-blocking)
+      import('@/lib/push/sendPushForActivity').then(({ sendPushForActivity }) => {
+        sendPushForActivity(activity.id).catch(console.error);
       });
     }
 

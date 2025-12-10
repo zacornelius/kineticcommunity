@@ -67,6 +67,7 @@ model User {
   following          Follow[]            @relation("follower")
   activities         Activity[]          @relation("activity")
   notifications      Activity[]          @relation("notification")
+  pushSubscriptions  PushSubscription[]
 }
 
 model VerificationToken {
@@ -206,4 +207,16 @@ enum RelationshipStatus {
   IN_A_RELATIONSHIP
   ENGAGED
   MARRIED
+}
+
+model PushSubscription {
+  id          String   @id @default(cuid())
+  userId      String
+  endpoint    String   @unique
+  p256dh      String
+  auth        String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

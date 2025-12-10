@@ -54,7 +54,7 @@ export async function POST(request: Request, { params }: { params: { commentId: 
     // Record a 'CREATE_REPLY' activity
     // Find the owner of the comment being replied to
     if (comment) {
-      await prisma.activity.create({
+      const activity = await prisma.activity.create({
         data: {
           type: 'CREATE_REPLY',
           sourceId: res.id,
@@ -62,6 +62,11 @@ export async function POST(request: Request, { params }: { params: { commentId: 
           targetId: commentId,
           targetUserId: comment.userId,
         },
+      });
+
+      // Send push notification (non-blocking)
+      import('@/lib/push/sendPushForActivity').then(({ sendPushForActivity }) => {
+        sendPushForActivity(activity.id).catch(console.error);
       });
     }
 

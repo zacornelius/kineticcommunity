@@ -28,13 +28,18 @@ export async function POST(request: Request, { params }: { params: { userId: str
     });
 
     // Record a 'CREATE_FOLLOW' activity
-    await prisma.activity.create({
+    const activity = await prisma.activity.create({
       data: {
         type: 'CREATE_FOLLOW',
         sourceId: res.id,
         sourceUserId: user.id,
         targetUserId: userIdToFollow,
       },
+    });
+
+    // Send push notification (non-blocking)
+    import('@/lib/push/sendPushForActivity').then(({ sendPushForActivity }) => {
+      sendPushForActivity(activity.id).catch(console.error);
     });
 
     return NextResponse.json({ followed: true }, { status: 200 });

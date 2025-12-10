@@ -16,9 +16,13 @@ export default {
       const isOnAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
 
       const unProtectedPages = ['/terms', '/privacy-policy']; // Add more here if needed
+      const staticFiles = ['/manifest.json', '/sw.js', '/logo.png', '/favicon.ico']; // Static files that should be accessible
       const isOnUnprotectedPage =
         pathname === '/' || // The root page '/' is also an unprotected page
-        unProtectedPages.some((page) => pathname.startsWith(page));
+        unProtectedPages.some((page) => pathname.startsWith(page)) ||
+        staticFiles.includes(pathname) ||
+        pathname.startsWith('/_next') || // Next.js internal files
+        pathname.startsWith('/api/auth'); // NextAuth API routes
       const isProtectedPage = !isOnUnprotectedPage;
 
       if (isOnAuthPage) {

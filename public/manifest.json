@@ -1,0 +1,25 @@
+{
+  "name": "Kinetic Community",
+  "short_name": "Kinetic",
+  "description": "A community for all of the Kinetic Pack. Engage, discuss, and participate in brand events.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FEFDFF",
+  "theme_color": "#3aad49",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "327x39",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "327x39",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "prefer_related_applications": false
+}

@@ -2,10 +2,12 @@
 
 import { TabButton } from '@/components/TabButton';
 import { usePathname, useSelectedLayoutSegment } from 'next/navigation';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 export default function Tabs({ isOwnProfile }: { isOwnProfile: boolean }) {
   const selectedSegment = useSelectedLayoutSegment();
   const parentLayoutSegment = `/${usePathname().split('/')[1]}`;
+  const { isAdmin } = useIsAdmin();
 
   return (
     <div className="mt-4 inline-flex flex-row gap-6 overflow-x-auto border-b-[1px] border-muted">
@@ -14,6 +16,7 @@ export default function Tabs({ isOwnProfile }: { isOwnProfile: boolean }) {
         { title: 'Photos', segment: `${parentLayoutSegment}/photos` },
         { title: 'About', segment: `${parentLayoutSegment}/about` },
         ...[isOwnProfile ? { title: 'Activity', segment: `${parentLayoutSegment}/activity` } : undefined],
+        ...[isOwnProfile && isAdmin ? { title: 'Alerts', segment: `${parentLayoutSegment}/alerts` } : undefined],
       ].map((item) => {
         if (!item) return null;
         const { title, segment } = item;

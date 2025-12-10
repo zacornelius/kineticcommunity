@@ -52,7 +52,7 @@ export async function POST(request: Request, { params }: { params: { userId: str
   });
   if (comment) {
     const type = comment?.parentId ? 'REPLY_LIKE' : 'COMMENT_LIKE';
-    await prisma.activity.create({
+    const activity = await prisma.activity.create({
       data: {
         type,
         sourceId: res.id,
@@ -60,6 +60,11 @@ export async function POST(request: Request, { params }: { params: { userId: str
         targetId: commentId,
         targetUserId: comment?.userId,
       },
+    });
+
+    // Send push notification (non-blocking)
+    import('@/lib/push/sendPushForActivity').then(({ sendPushForActivity }) => {
+      sendPushForActivity(activity.id).catch(console.error);
     });
   }
 
