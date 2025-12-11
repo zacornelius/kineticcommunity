@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 
 export default {
   providers: [GitHub, Facebook, Google],
+  trustHost: true,
   pages: {
     signIn: '/login',
   },
