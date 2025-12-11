@@ -22,8 +22,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
-    const { userId, title, body, url } = sendPushSchema.parse(body);
+    const requestBody = await request.json();
+    const { userId, title, body, url } = sendPushSchema.parse(requestBody);
 
     if (userId) {
       // Send to specific user
@@ -39,9 +39,6 @@ export async function POST(request: Request) {
         title,
         body,
         icon: '/logo.png',
-        data: {
-          url: url || '/',
-        },
       });
 
       return NextResponse.json({
@@ -71,11 +68,8 @@ export async function POST(request: Request) {
               title,
               body,
               icon: '/logo.png',
-              data: {
-                url: url || '/',
-              },
-            })
-          )
+            }),
+          ),
         );
 
         results.forEach((result) => {
@@ -103,4 +97,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
