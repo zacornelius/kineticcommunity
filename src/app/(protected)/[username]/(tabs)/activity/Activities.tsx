@@ -21,7 +21,6 @@ export function Activities({ userId }: { userId: string }) {
     number
   >({
     queryKey: ['users', userId, 'activity'],
-    defaultPageParam: 0,
     queryFn: async ({ pageParam: cursor }) => getActivities({ userId, cursor }),
     getNextPageParam: (lastPage, pages) => {
       // If the `pages` `length` is 0, that means there is not a single activity to load
