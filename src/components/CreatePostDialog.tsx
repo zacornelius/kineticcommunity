@@ -42,17 +42,17 @@ export function CreatePostDialog({
     if (files === null || files.length === 0) {
       return;
     }
-    
+
     // Store files array immediately before any async operations
     const filesArr = Array.from(files);
-    
+
     const selectedVisualMedia: GetVisualMedia[] = filesArr.map((file) => ({
       type: file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO',
       url: URL.createObjectURL(file),
     }));
-    
+
     setVisualMedia((prev) => [...prev, ...selectedVisualMedia]);
-    
+
     // Clear the file input after a brief delay to ensure the change event completes
     // This allows selecting the same file again
     setTimeout(() => {

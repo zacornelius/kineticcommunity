@@ -13,23 +13,15 @@ export function PageHeader({ children, action }: { children: React.ReactNode; ac
 
   return (
     <div className="mb-4 flex items-center justify-between">
-      <div className="flex-1">
-        {children}
-      </div>
+      <div className="flex-1">{children}</div>
       <div className="flex items-center gap-4">
         {action && <div>{action}</div>}
         <Link href={`/${username}`} className="flex-shrink-0">
-          <div className="h-10 w-10 rounded-full overflow-hidden">
-            <ProfilePhoto
-              name={name}
-              username={username}
-              photoUrl={profilePhoto}
-              disableLink
-            />
+          <div className="h-10 w-10 overflow-hidden rounded-full">
+            <ProfilePhoto name={name} username={username} photoUrl={profilePhoto} disableLink />
           </div>
         </Link>
       </div>
     </div>
   );
 }
-

@@ -76,11 +76,15 @@ export const Post = memo(
       data.visualMedia.forEach((media, index) => {
         const link = document.createElement('a');
         link.href = `/api/posts/${postId}/download?index=${index}`;
-        link.download = media.fileName;
+        // Extract filename from URL or use default based on type
+        const urlParts = media.url.split('/');
+        const urlFilename = urlParts[urlParts.length - 1]?.split('?')[0] || '';
+        const defaultExt = media.type === 'VIDEO' ? '.mp4' : '.jpg';
+        link.download = urlFilename || `media-${index + 1}${defaultExt}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         // Add a small delay between downloads to avoid browser blocking
         if (index < data.visualMedia.length - 1) {
           setTimeout(() => {}, 100);
@@ -132,18 +136,8 @@ export const Post = memo(
           <div className="flex items-center gap-2">
             {isAdmin && (
               <>
-                <Button
-                  onPress={handleDownloadPost}
-                  Icon={Download}
-                  mode="ghost"
-                  aria-label="Download post"
-                />
-                <Button
-                  onPress={handleAdminDelete}
-                  Icon={DeleteIcon}
-                  mode="ghost"
-                  aria-label="Delete post (admin)"
-                />
+                <Button onPress={handleDownloadPost} Icon={Download} mode="ghost" aria-label="Download post" />
+                <Button onPress={handleAdminDelete} Icon={DeleteIcon} mode="ghost" aria-label="Delete post (admin)" />
               </>
             )}
             {isOwnPost && <PostOptions postId={postId} content={content} visualMedia={visualMedia} />}

@@ -8,7 +8,7 @@ if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails(
     process.env.VAPID_EMAIL || 'mailto:notifications@kineticcommunity.com',
     process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
+    process.env.VAPID_PRIVATE_KEY,
   );
 }
 
@@ -29,10 +29,7 @@ interface PushNotificationData {
 /**
  * Send push notification to a user
  */
-export async function sendPushNotification(
-  userId: string,
-  notification: PushNotificationData
-): Promise<void> {
+export async function sendPushNotification(userId: string, notification: PushNotificationData): Promise<void> {
   // Check if VAPID keys are configured
   if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
     console.warn('VAPID keys not configured. Push notifications will not be sent.');
@@ -60,7 +57,7 @@ export async function sendPushNotification(
               auth: subscription.auth,
             },
           },
-          JSON.stringify(notification)
+          JSON.stringify(notification),
         );
       } catch (error: any) {
         // If subscription is invalid, remove it
@@ -86,7 +83,7 @@ export async function sendPushNotification(
 export function formatNotificationForActivity(
   type: ActivityType,
   sourceUserName: string,
-  content?: string
+  content?: string,
 ): Omit<PushNotificationData, 'data'> {
   const notifications: Record<ActivityType, { title: string; body: string }> = {
     CREATE_FOLLOW: {
@@ -95,15 +92,21 @@ export function formatNotificationForActivity(
     },
     POST_LIKE: {
       title: 'Post Liked',
-      body: `${sourceUserName} liked your post${content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''}`,
+      body: `${sourceUserName} liked your post${
+        content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''
+      }`,
     },
     POST_MENTION: {
       title: 'You were mentioned',
-      body: `${sourceUserName} mentioned you in a post${content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''}`,
+      body: `${sourceUserName} mentioned you in a post${
+        content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''
+      }`,
     },
     CREATE_COMMENT: {
       title: 'New Comment',
-      body: `${sourceUserName} commented on your post${content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''}`,
+      body: `${sourceUserName} commented on your post${
+        content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''
+      }`,
     },
     COMMENT_LIKE: {
       title: 'Comment Liked',
@@ -115,7 +118,9 @@ export function formatNotificationForActivity(
     },
     CREATE_REPLY: {
       title: 'New Reply',
-      body: `${sourceUserName} replied to your comment${content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''}`,
+      body: `${sourceUserName} replied to your comment${
+        content ? `: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"` : ''
+      }`,
     },
     REPLY_LIKE: {
       title: 'Reply Liked',
@@ -129,4 +134,3 @@ export function formatNotificationForActivity(
 
   return notifications[type] || { title: 'New Notification', body: 'You have a new notification' };
 }
-

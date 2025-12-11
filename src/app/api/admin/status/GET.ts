@@ -10,7 +10,7 @@ export async function GET() {
     console.log('GET /api/admin/status called');
     const adminStatus = await getAdminStatus();
     console.log('Admin status result:', adminStatus);
-    
+
     if (adminStatus === null) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
@@ -21,8 +21,7 @@ export async function GET() {
     console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     return NextResponse.json(
       { error: 'Internal server error', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

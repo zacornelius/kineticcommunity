@@ -52,7 +52,7 @@ export async function GET(request: Request, { params }: { params: { postId: stri
     });
 
     const response = await s3Client.send(command);
-    
+
     if (!response.Body) {
       return NextResponse.json({ error: 'File not found in S3' }, { status: 404 });
     }
@@ -66,13 +66,14 @@ export async function GET(request: Request, { params }: { params: { postId: stri
     const buffer = Buffer.concat(chunks);
 
     // Determine content type from file extension
-    const contentType = fileName.endsWith('.mp4') || fileName.endsWith('.mov') || fileName.endsWith('.webm')
-      ? 'video/mp4'
-      : fileName.endsWith('.png')
-      ? 'image/png'
-      : fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')
-      ? 'image/jpeg'
-      : 'application/octet-stream';
+    const contentType =
+      fileName.endsWith('.mp4') || fileName.endsWith('.mov') || fileName.endsWith('.webm')
+        ? 'video/mp4'
+        : fileName.endsWith('.png')
+        ? 'image/png'
+        : fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')
+        ? 'image/jpeg'
+        : 'application/octet-stream';
 
     return new NextResponse(buffer, {
       headers: {
@@ -85,8 +86,7 @@ export async function GET(request: Request, { params }: { params: { postId: stri
     console.error('Error downloading file from S3:', error);
     return NextResponse.json(
       { error: 'Failed to download file', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

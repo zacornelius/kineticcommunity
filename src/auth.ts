@@ -2,8 +2,7 @@ import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import prisma from '@/lib/prisma/prisma';
-import { createSendEmailCommand } from '@/lib/ses/createSendEmailCommand';
-import { sesClient } from '@/lib/ses/sesClient';
+import { sendEmail } from '@/lib/email/nodemailer';
 
 declare module 'next-auth' {
   interface Session {
@@ -35,9 +34,9 @@ export const {
       async sendVerificationRequest({ identifier: email, url }) {
         // For local development, log the magic link to console
         const isDev = process.env.NODE_ENV === 'development';
-        const hasDummySES = process.env.SES_ACCESS_KEY_ID === 'dummy';
-        
-        if (isDev || hasDummySES) {
+        const hasNoSMTP = !process.env.SMTP_USER || !process.env.SMTP_PASSWORD;
+
+        if (isDev || hasNoSMTP) {
           // Use console.error to ensure it shows up in logs (stderr is more visible)
           console.error('\n═══════════════════════════════════════════════════════════');
           console.error('📧 EMAIL LOGIN - Magic Link for local development:');
@@ -48,28 +47,27 @@ export const {
           return;
         }
 
-        // Production: Send email via SES
+        // Production: Send email via SMTP
         try {
-          const sendEmailCommand = createSendEmailCommand(
-            email,
-            'noreply@norcio.dev',
-            'Login To Munia',
-            `<body>
+          await sendEmail({
+            to: email,
+            subject: 'Login to Kinetic Community',
+            html: `<body>
   <table width="100%" border="0" cellspacing="20" cellpadding="0"
     style=" max-width: 600px; margin: auto; border-radius: 10px;">
     <tr>
       <td align="center"
         style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif;">
-        Login to <strong>Munia</strong>
+        Login to <strong>Kinetic Community</strong>
       </td>
     </tr>
     <tr>
       <td align="center" style="padding: 20px 0;">
         <table border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td align="center" style="border-radius: 5px;" bgcolor="purple"><a href="${url}"
+            <td align="center" style="border-radius: 5px;" bgcolor="#6366f1"><a href="${url}"
                 target="_blank"
-                style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: black; text-decoration: none; border-radius: 5px; padding: 10px 20px; display: inline-block; font-weight: bold;">Login</a></td>
+                style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: white; text-decoration: none; border-radius: 5px; padding: 10px 20px; display: inline-block; font-weight: bold;">Login</a></td>
           </tr>
         </table>
       </td>
@@ -82,8 +80,7 @@ export const {
     </tr>
   </table>
 </body>`,
-          );
-          await sesClient.send(sendEmailCommand);
+          });
         } catch (error) {
           console.error('Failed to send email:', error);
           throw new Error('Failed to send verification email');

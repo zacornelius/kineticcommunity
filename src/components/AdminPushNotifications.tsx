@@ -11,7 +11,7 @@ export function AdminPushNotifications() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [url, setUrl] = useState('');
-  const { prompt, confirm } = useDialogs();
+  const { alert, confirm } = useDialogs();
 
   // Send push notification mutation
   const sendPushMutation = useMutation({
@@ -28,30 +28,27 @@ export function AdminPushNotifications() {
       return res.json();
     },
     onSuccess: (data) => {
-      prompt({
+      alert({
         title: 'Success',
         message: data.message,
-        promptType: 'alert',
       });
       setTitle('');
       setBody('');
       setUrl('');
     },
     onError: (error: Error) => {
-      prompt({
+      alert({
         title: 'Error',
         message: error.message,
-        promptType: 'alert',
       });
     },
   });
 
   const handleSend = () => {
     if (!title.trim() || !body.trim()) {
-      prompt({
+      alert({
         title: 'Validation Error',
         message: 'Title and body are required',
-        promptType: 'alert',
       });
       return;
     }
@@ -72,34 +69,19 @@ export function AdminPushNotifications() {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border border-border bg-card p-6">
-        <h2 className="text-2xl font-bold mb-4">Send Push Notification</h2>
+        <h2 className="mb-4 text-2xl font-bold">Send Push Notification</h2>
 
         <div className="space-y-4">
           <div>
-            <TextInput
-              label="Title *"
-              value={title}
-              onChange={setTitle}
-              placeholder="Notification title"
-            />
+            <TextInput label="Title *" value={title} onChange={setTitle} placeholder="Notification title" />
           </div>
 
           <div>
-            <Textarea
-              label="Message *"
-              value={body}
-              onChange={setBody}
-              placeholder="Notification message"
-            />
+            <Textarea label="Message *" value={body} onChange={setBody} placeholder="Notification message" />
           </div>
 
           <div>
-            <TextInput
-              label="URL (optional)"
-              value={url}
-              onChange={setUrl}
-              placeholder="/feed or /posts/123"
-            />
+            <TextInput label="URL (optional)" value={url} onChange={setUrl} placeholder="/feed or /posts/123" />
           </div>
 
           <div className="flex gap-2">
@@ -115,4 +97,3 @@ export function AdminPushNotifications() {
     </div>
   );
 }
-

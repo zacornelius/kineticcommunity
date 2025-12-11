@@ -12,7 +12,14 @@ export function MenuBar() {
   return (
     <div className="fixed bottom-0 z-[2] flex w-full bg-background/70 shadow-inner backdrop-blur-sm md:sticky md:top-0 md:h-screen md:w-[212px] md:flex-col md:items-start md:bg-inherit md:p-4 md:shadow-none md:backdrop-blur-none">
       <Link href="/" title="Home" className="mb-4 hidden items-center gap-2 md:flex">
-        <Image src="/logo.png" alt="Logo" width={327} height={39} className="h-4 w-auto" style={{ objectFit: 'contain' }} />
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          width={327}
+          height={39}
+          className="h-4 w-auto"
+          style={{ objectFit: 'contain' }}
+        />
       </Link>
       {[
         {

@@ -15,4 +15,3 @@ function SvgHome(props: SVGProps<SVGSVGElement>) {
   );
 }
 export default SvgHome;
-

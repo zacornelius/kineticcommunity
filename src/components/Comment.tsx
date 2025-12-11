@@ -132,12 +132,7 @@ export const Comment = memo(
             />
 
             {isAdmin && (
-              <Button
-                onPress={handleAdminDelete}
-                Icon={DeleteIcon}
-                mode="ghost"
-                aria-label="Delete comment (admin)"
-              />
+              <Button onPress={handleAdminDelete} Icon={DeleteIcon} mode="ghost" aria-label="Delete comment (admin)" />
             )}
 
             {isOwnComment && !isAdmin && (

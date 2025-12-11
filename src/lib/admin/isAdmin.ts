@@ -43,4 +43,3 @@ export async function getAdminStatus(): Promise<boolean | null> {
     throw error;
   }
 }
-

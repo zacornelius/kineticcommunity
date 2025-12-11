@@ -15,4 +15,3 @@ function SvgDownload(props: SVGProps<SVGSVGElement>) {
   );
 }
 export default SvgDownload;
-

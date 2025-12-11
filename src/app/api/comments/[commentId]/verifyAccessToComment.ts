@@ -4,7 +4,7 @@ import { isAdmin } from '@/lib/admin/isAdmin';
 
 export const verifyAccessToComment = async (commentId: number) => {
   const [user] = await getServerUser();
-  
+
   // Admins can delete any comment
   const adminStatus = await isAdmin();
   if (adminStatus) {

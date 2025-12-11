@@ -18,7 +18,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="flex items-center justify-between px-4 sm:px-0">
           <Link href="/" title="Home page">
             <div className="flex cursor-pointer flex-row items-center justify-center gap-2 sm:pr-5">
-              <Image src="/logo.png" alt="Logo" width={327} height={39} className="h-4 w-auto" style={{ objectFit: 'contain' }} />
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={327}
+                height={39}
+                className="h-4 w-auto"
+                style={{ objectFit: 'contain' }}
+              />
             </div>
           </Link>
           <div className="hidden gap-3 sm:flex">

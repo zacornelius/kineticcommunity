@@ -12,7 +12,6 @@ import { SomethingWentWrong } from '@/components/SometingWentWrong';
 import { getNotifications } from '@/lib/client_data_fetching/getNotifications';
 
 export function Notifications({ userId }: { userId: string }) {
-
   const bottomElRef = useRef<HTMLDivElement>(null);
   const isBottomOnScreen = useOnScreen(bottomElRef);
   const { data, error, isPending, isError, fetchNextPage, isFetchingNextPage, hasNextPage, fetchPreviousPage } =

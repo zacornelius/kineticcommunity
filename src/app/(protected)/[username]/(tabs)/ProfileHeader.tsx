@@ -47,13 +47,7 @@ export function ProfileHeader({
               <ButtonLink shape="pill" mode="subtle" href="/edit-profile">
                 Edit Profile
               </ButtonLink>
-              <Button
-                Icon={LogOutCircle}
-                onPress={handleLogout}
-                mode="subtle"
-                shape="pill"
-                aria-label="Logout"
-              />
+              <Button Icon={LogOutCircle} onPress={handleLogout} mode="subtle" shape="pill" aria-label="Logout" />
             </>
           ) : (
             <ProfileActionButtons targetUserId={profile.id} />

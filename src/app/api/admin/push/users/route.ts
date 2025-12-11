@@ -55,7 +55,7 @@ export async function GET() {
         console.warn(`Skipping subscription ${sub.id} - user not found`);
         return;
       }
-      
+
       const existing = userMap.get(sub.userId);
       if (existing) {
         existing.subscriptionCount++;
@@ -91,8 +91,7 @@ export async function GET() {
         details: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

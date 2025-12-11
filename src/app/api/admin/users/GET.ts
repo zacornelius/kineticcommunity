@@ -41,22 +41,22 @@ export async function GET(request: Request) {
           },
         },
       },
-    take: limit,
-    skip: offset,
-    // Order by id (descending) since User model doesn't have createdAt
-    orderBy: { id: 'desc' },
+      take: limit,
+      skip: offset,
+      // Order by id (descending) since User model doesn't have createdAt
+      orderBy: { id: 'desc' },
     });
 
-  // Map to only return the fields we need
-  const usersResponse = users.map((user) => ({
-    id: user.id,
-    username: user.username,
-    name: user.name,
-    email: user.email,
-    profilePhoto: user.profilePhoto,
-    isAdmin: user.isAdmin ?? false,
-    _count: user._count,
-  }));
+    // Map to only return the fields we need
+    const usersResponse = users.map((user) => ({
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      profilePhoto: user.profilePhoto,
+      isAdmin: user.isAdmin ?? false,
+      _count: user._count,
+    }));
 
     const total = await prisma.user.count({ where });
 
@@ -70,8 +70,7 @@ export async function GET(request: Request) {
     console.error('Error in GET /api/admin/users:', error);
     return NextResponse.json(
       { error: 'Internal server error', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

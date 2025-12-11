@@ -1,0 +1,125 @@
+{
+  "family": "kinetic-community",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::885629328744:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::885629328744:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "kinetic-community-app",
+      "image": "885629328744.dkr.ecr.us-east-2.amazonaws.com/kinetic/community:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3002,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
+          "name": "PORT",
+          "value": "3002"
+        },
+        {
+          "name": "HOSTNAME",
+          "value": "0.0.0.0"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/database-url-oCxqQt"
+        },
+        {
+          "name": "SHADOW_DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/shadow-database-url-i7cIJn"
+        },
+        {
+          "name": "AUTH_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/auth-secret-IjdeZT"
+        },
+        {
+          "name": "URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/url-L9xEix"
+        },
+        {
+          "name": "AWS_REGION",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/aws-region-w9SM90"
+        },
+        {
+          "name": "S3_BUCKET_NAME",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/s3-bucket-name-WNPu2y"
+        },
+        {
+          "name": "S3_ACCESS_KEY_ID",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/s3-access-key-id-HEnBI9"
+        },
+        {
+          "name": "S3_SECRET_ACCESS_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/s3-secret-access-key-IkoD0r"
+        },
+        {
+          "name": "S3_CANONICAL_USER_ID",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/s3-canonical-user-id-tjQExF"
+        },
+        {
+          "name": "SES_ACCESS_KEY_ID",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/ses-access-key-id-bmyJEF"
+        },
+        {
+          "name": "SES_SECRET_ACCESS_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/ses-secret-access-key-dkCKrk"
+        },
+        {
+          "name": "VAPID_PUBLIC_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/vapid-public-key-JuyvEm"
+        },
+        {
+          "name": "VAPID_PRIVATE_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/vapid-private-key-AK4xF7"
+        },
+        {
+          "name": "VAPID_EMAIL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/vapid-email-FvhP7X"
+        },
+        {
+          "name": "NEXT_PUBLIC_VAPID_PUBLIC_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/next-public-vapid-public-key-5mBC30"
+        },
+        {
+          "name": "SMTP_USER",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/smtp-user-qP06Ax"
+        },
+        {
+          "name": "SMTP_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/smtp-password-ZKGtSo"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/kinetic-community",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3002/api/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ]
+}
+

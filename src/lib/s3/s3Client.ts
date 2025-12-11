@@ -10,6 +10,4 @@ export const s3Client = new S3Client({
   },
   // Force path-style addressing to avoid redirect issues
   forcePathStyle: false,
-  // The SDK should automatically follow redirects, but we can be explicit
-  followRedirects: true,
 });

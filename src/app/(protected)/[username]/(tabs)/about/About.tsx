@@ -1,13 +1,4 @@
-import {
-  AtSign,
-  BuildingBusinessOffice,
-  Bullhorn,
-  Calendar,
-  Mail,
-  Phone,
-  Profile,
-  WorldNet,
-} from '@/svg_components';
+import { AtSign, BuildingBusinessOffice, Bullhorn, Calendar, Mail, Phone, Profile, WorldNet } from '@/svg_components';
 import { format } from 'date-fns';
 import { GetUser } from '@/types/definitions';
 import { AboutItem } from './AboutItem';

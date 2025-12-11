@@ -6,7 +6,7 @@ export async function deleteObject(fileName: string) {
   // For local development, skip S3 deletion if using dummy credentials
   const isLocalDev = process.env.NODE_ENV === 'development';
   const hasDummyCredentials = process.env.S3_ACCESS_KEY_ID === 'dummy';
-  
+
   if (isLocalDev && hasDummyCredentials) {
     console.warn(`[LOCAL DEV] Skipping S3 delete for ${fileName}.`);
     return;

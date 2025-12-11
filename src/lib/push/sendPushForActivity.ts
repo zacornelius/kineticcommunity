@@ -96,4 +96,3 @@ export async function sendPushForActivity(activityId: number): Promise<void> {
     // Don't throw - push notifications are non-critical
   }
 }
-

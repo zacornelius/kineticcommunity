@@ -24,11 +24,11 @@ export const CreatePostOptions = forwardRef<
     },
     [forwardedRef],
   );
-  
+
   const onUploadImageOrVideoPress = useCallback((e: any) => {
     // Prevent any default behavior that might interfere
     e?.preventDefault?.();
-    
+
     // Use a small delay to ensure the button click event completes
     // before triggering the file input
     setTimeout(() => {

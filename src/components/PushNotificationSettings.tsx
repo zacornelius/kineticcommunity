@@ -11,7 +11,7 @@ export function PushNotificationSettings() {
   if (!isSupported) {
     return (
       <div className="rounded-lg border border-border bg-card p-4">
-        <h3 className="text-lg font-semibold mb-2">Push Notifications</h3>
+        <h3 className="mb-2 text-lg font-semibold">Push Notifications</h3>
         <p className="text-sm text-muted-foreground">
           Push notifications are not supported in your browser. Please use a modern browser like Chrome, Safari (iOS
           16.4+), or Edge.
@@ -37,13 +37,13 @@ export function PushNotificationSettings() {
 
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="text-lg font-semibold mb-2">Push Notifications</h3>
-      <p className="text-sm text-muted-foreground mb-4">
+      <h3 className="mb-2 text-lg font-semibold">Push Notifications</h3>
+      <p className="mb-4 text-sm text-muted-foreground">
         Get notified when someone likes your posts, comments on your content, or follows you.
       </p>
 
       {permission === 'denied' && (
-        <p className="text-sm text-destructive mb-4">
+        <p className="mb-4 text-sm text-destructive">
           Notifications are blocked. Please enable them in your browser settings.
         </p>
       )}
@@ -55,10 +55,7 @@ export function PushNotificationSettings() {
         {isSubscribed ? 'Disable Push Notifications' : 'Enable Push Notifications'}
       </Button>
 
-      {isSubscribed && (
-        <p className="text-xs text-muted-foreground mt-2">✓ Push notifications are enabled</p>
-      )}
+      {isSubscribed && <p className="mt-2 text-xs text-muted-foreground">✓ Push notifications are enabled</p>}
     </div>
   );
 }
-

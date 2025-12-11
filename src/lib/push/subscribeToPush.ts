@@ -4,9 +4,7 @@
  * Subscribe to push notifications
  * Returns the push subscription object
  */
-export async function subscribeToPush(
-  registration: ServiceWorkerRegistration
-): Promise<PushSubscription | null> {
+export async function subscribeToPush(registration: ServiceWorkerRegistration): Promise<PushSubscription | null> {
   if (!('PushManager' in window)) {
     console.log('Push messaging is not supported');
     return null;
@@ -61,4 +59,3 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   }
   return outputArray;
 }
-

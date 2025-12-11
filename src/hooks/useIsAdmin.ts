@@ -28,4 +28,3 @@ export function useIsAdmin() {
 
   return { isAdmin: data ?? false, isLoading };
 }
-

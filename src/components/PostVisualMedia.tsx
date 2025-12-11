@@ -22,7 +22,7 @@ export function PostVisualMedia({
   });
   const { focusProps, isFocusVisible } = useFocusRing();
   const style = useMemo(() => ({ height }), [height]);
-  
+
   // Stop event propagation when interacting with video controls
   // This prevents the modal from opening when clicking play/pause/volume etc.
   const handleVideoInteraction = (e: React.MouseEvent<HTMLVideoElement>) => {

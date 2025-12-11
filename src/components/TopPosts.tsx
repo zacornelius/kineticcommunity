@@ -16,7 +16,11 @@ export function TopPosts() {
     }));
   }, []);
 
-  const { data: posts, isLoading, error } = useQuery<GetPost[]>({
+  const {
+    data: posts,
+    isLoading,
+    error,
+  } = useQuery<GetPost[]>({
     queryKey: ['top-posts'],
     queryFn: async () => {
       const res = await fetch('/api/home/top-posts');
@@ -31,7 +35,7 @@ export function TopPosts() {
   if (!posts || posts.length === 0) {
     return (
       <div className="rounded-lg border border-border bg-card p-6">
-        <h2 className="text-2xl font-bold mb-2">Top Posts</h2>
+        <h2 className="mb-2 text-2xl font-bold">Top Posts</h2>
         <p className="text-muted-foreground">No posts found in the last 7 days.</p>
       </div>
     );
@@ -39,8 +43,8 @@ export function TopPosts() {
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Top Posts</h2>
-      <p className="text-sm text-muted-foreground mb-4">Most liked posts in the last 7 days</p>
+      <h2 className="mb-4 text-2xl font-bold">Top Posts</h2>
+      <p className="mb-4 text-sm text-muted-foreground">Most liked posts in the last 7 days</p>
       <div className="space-y-4">
         {posts.map((post) => (
           <Post
@@ -54,4 +58,3 @@ export function TopPosts() {
     </div>
   );
 }
-

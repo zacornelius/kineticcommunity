@@ -71,12 +71,12 @@ export function AdminUserContent({ userId }: AdminUserContentProps) {
 
   return (
     <div className="space-y-4">
-      <div className="p-4 bg-card rounded-lg border border-border">
-        <div className="flex items-center justify-between mb-4">
+      <div className="rounded-lg border border-border bg-card p-4">
+        <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xl font-bold">{user.name || user.username || 'User'}</h3>
           <button
             onClick={handleDownloadContent}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-accent">
+            className="rounded-lg bg-primary px-4 py-2 text-primary-foreground hover:bg-primary-accent">
             Download Content
           </button>
         </div>
@@ -101,8 +101,8 @@ export function AdminUserContent({ userId }: AdminUserContentProps) {
       </div>
 
       <div>
-        <h4 className="text-lg font-semibold mb-2">Posts</h4>
-        <div className="space-y-4 max-h-[600px] overflow-y-auto">
+        <h4 className="mb-2 text-lg font-semibold">Posts</h4>
+        <div className="max-h-[600px] space-y-4 overflow-y-auto">
           {visiblePosts.length === 0 ? (
             <p className="text-muted-foreground">No posts found</p>
           ) : (
@@ -120,7 +120,7 @@ export function AdminUserContent({ userId }: AdminUserContentProps) {
                 />
                 <button
                   onClick={() => handleDeletePost(post.id)}
-                  className="absolute top-2 right-2 p-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/80 z-10">
+                  className="absolute right-2 top-2 z-10 rounded-lg bg-destructive p-2 text-destructive-foreground hover:bg-destructive/80">
                   <Delete className="h-5 w-5" />
                 </button>
               </div>
@@ -131,4 +131,3 @@ export function AdminUserContent({ userId }: AdminUserContentProps) {
     </div>
   );
 }
-
