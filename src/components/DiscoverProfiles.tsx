@@ -30,7 +30,7 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
     number
   >({
     queryKey: [
-    initialPageParam: 0,      'discover',
+      'discover',
       {
         search: searchParams.get('search'),
         gender: searchParams.get('gender'),
