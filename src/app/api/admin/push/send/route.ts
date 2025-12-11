@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { isAdmin } from '@/lib/admin/isAdmin';
 import { sendPushNotification } from '@/lib/push/sendPushNotification';

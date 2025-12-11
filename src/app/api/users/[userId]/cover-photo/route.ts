@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { useUpdateProfileAndCoverPhoto } from '@/hooks/useUpdateProfileAndCoverPhoto';
 
 export async function POST(request: Request, { params }: { params: { userId: string } }) {
