@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminStatus } from '@/lib/admin/isAdmin';
 
-export const dynamic = 'force-dynamic';
-
 /**
  * GET /api/admin/status
  * Check if current user is an admin
