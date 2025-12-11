@@ -49,6 +49,14 @@
           "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/url-L9xEix"
         },
         {
+          "name": "NEXTAUTH_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/nextauth-url-dnYkuA"
+        },
+        {
+          "name": "AUTH_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/auth-url-WKbxPO"
+        },
+        {
           "name": "AWS_REGION",
           "valueFrom": "arn:aws:secretsmanager:us-east-2:885629328744:secret:kinetic-community/aws-region-w9SM90"
         },

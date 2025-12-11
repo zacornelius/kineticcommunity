@@ -32,6 +32,14 @@ export const {
       maxAge: 24 * 60 * 60,
       options: {},
       async sendVerificationRequest({ identifier: email, url }) {
+        // Log what URL NextAuth generated and what env vars we have
+        console.log('=== EMAIL DEBUG ===');
+        console.log('Generated URL:', url);
+        console.log('AUTH_URL:', process.env.AUTH_URL);
+        console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+        console.log('URL:', process.env.URL);
+        console.log('==================');
+
         // For local development, log the magic link to console
         const isDev = process.env.NODE_ENV === 'development';
         const hasSES = process.env.SES_ACCESS_KEY_ID && process.env.SES_SECRET_ACCESS_KEY;
