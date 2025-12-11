@@ -13,17 +13,18 @@ COPY prisma ./prisma/
 # Install dependencies
 RUN npm ci --legacy-peer-deps
 
-# Generate Prisma Client
-RUN npx prisma generate
-
 # Rebuild the source code only when needed
 FROM base AS builder
+RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Generate Prisma Client in builder stage
+RUN npx prisma generate
 
 # Build the application
 RUN npm run build
