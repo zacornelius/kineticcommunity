@@ -1,8 +1,8 @@
 import 'server-only';
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 
 // Create reusable transporter using GoDaddy 365 SMTP
-export const transporter = nodemailer.createTransporter({
+export const transporter = nodemailer.createTransport({
   host: 'smtp.office365.com',
   port: 587,
   secure: false, // true for 465, false for other ports
