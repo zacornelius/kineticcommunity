@@ -9,7 +9,7 @@
   "containerDefinitions": [
     {
       "name": "kinetic-community-app",
-      "image": "885629328744.dkr.ecr.us-east-2.amazonaws.com/kinetic/community:latest",
+      "image": "885629328744.dkr.ecr.us-east-2.amazonaws.com/kinetic/community:43f23e0d3dc8fea466457bc471a1f9d7cd88bf09",
       "essential": true,
       "portMappings": [
         {

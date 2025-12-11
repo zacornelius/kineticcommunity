@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import prisma from '@/lib/prisma/prisma';
-import { sendEmail } from '@/lib/email/nodemailer';
+import { sendEmail } from '@/lib/email/ses';
 
 declare module 'next-auth' {
   interface Session {
@@ -34,9 +34,9 @@ export const {
       async sendVerificationRequest({ identifier: email, url }) {
         // For local development, log the magic link to console
         const isDev = process.env.NODE_ENV === 'development';
-        const hasNoSMTP = !process.env.SMTP_USER || !process.env.SMTP_PASSWORD;
+        const hasSES = process.env.SES_ACCESS_KEY_ID && process.env.SES_SECRET_ACCESS_KEY;
 
-        if (isDev || hasNoSMTP) {
+        if (isDev || !hasSES) {
           // Use console.error to ensure it shows up in logs (stderr is more visible)
           console.error('\n═══════════════════════════════════════════════════════════');
           console.error('📧 EMAIL LOGIN - Magic Link for local development:');
@@ -47,7 +47,7 @@ export const {
           return;
         }
 
-        // Production: Send email via SMTP
+        // Production: Send email via AWS SES
         try {
           await sendEmail({
             to: email,
