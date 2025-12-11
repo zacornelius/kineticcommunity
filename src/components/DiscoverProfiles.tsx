@@ -39,6 +39,7 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
         followingOf,
       },
     ],
+    initialPageParam: 0,
     queryFn: async ({ pageParam: offset }) => {
       const users = await getDiscoverProfiles({
         offset,

@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma/prisma';
 import { isAdmin } from '@/lib/admin/isAdmin';
 
-export const dynamic = 'force-dynamic';
-
 /**
  * GET /api/admin/users
  * Search for users (admin only)
