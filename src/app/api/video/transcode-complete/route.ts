@@ -11,18 +11,48 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { fileName, status } = body; // fileName is the base name without extension
+    console.log('Received webhook payload:', JSON.stringify(body, null, 2));
 
-    if (!fileName) {
-      return NextResponse.json({ error: 'fileName is required' }, { status: 400 });
+    // Check if this is an EventBridge event or a manual call
+    let fileName: string;
+    let status: string;
+
+    if (body.detail && body['detail-type'] === 'MediaConvert Job State Change') {
+      // EventBridge payload structure
+      const detail = body.detail;
+      status = detail.status; // COMPLETE, ERROR, or CANCELED
+
+      // Extract the output file path from the event
+      const outputFilePath = detail.outputGroupDetails?.[0]?.outputDetails?.[0]?.outputFilePaths?.[0];
+      
+      if (!outputFilePath) {
+        console.error('No output file path in EventBridge event:', body);
+        return NextResponse.json({ error: 'No output file path found' }, { status: 400 });
+      }
+
+      // Extract fileName from S3 path: s3://bucket/filename.mp4 -> filename.mp4
+      fileName = outputFilePath.split('/').pop() || '';
+      console.log('Extracted from EventBridge:', { fileName, status });
+    } else {
+      // Manual call with simple structure
+      fileName = body.fileName;
+      status = body.status;
+      
+      if (!fileName) {
+        return NextResponse.json({ error: 'fileName is required' }, { status: 400 });
+      }
+
+      // If fileName doesn't have extension, add .mp4
+      if (!fileName.endsWith('.mp4')) {
+        fileName = `${fileName}.mp4`;
+      }
+      console.log('Manual call:', { fileName, status });
     }
 
     // Update all visual media with this fileName (should be one)
-    const transcodedFileName = `${fileName}.mp4`;
-    
     const result = await prisma.visualMedia.updateMany({
       where: {
-        fileName: transcodedFileName,
+        fileName: fileName,
         processingStatus: {
           in: ['PENDING', 'PROCESSING'],
         },
