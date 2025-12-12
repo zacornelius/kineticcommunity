@@ -98,7 +98,7 @@ export const {
   ],
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: 'jwt',
+    strategy: 'database',
   },
   callbacks: {
     ...authConfig.callbacks,
