@@ -64,8 +64,6 @@ export async function POST(request: NextRequest) {
         email: user.email,
         name: user.name || user.username || user.email,
         picture: user.image,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + sessionMaxAge,
       },
       secret: process.env.AUTH_SECRET!,
       maxAge: sessionMaxAge,
