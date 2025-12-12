@@ -1,4 +1,9 @@
 export const isValidFileType = (fileType: string) => {
-  const validTypes = ['jpg', 'jpeg', 'png', 'mp4', 'mov', 'avi'];
+  const validTypes = [
+    // Images
+    'jpg', 'jpeg', 'png', 'gif', 'webp',
+    // Videos
+    'mp4', 'quicktime', 'avi', 'x-msvideo', 'webm', 'ogg'
+  ];
   return validTypes.includes(fileType.split('/')[1]);
 };

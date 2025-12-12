@@ -61,7 +61,7 @@ export function TopDogs() {
                 <div className="flex-shrink-0">
                   <span className="text-xl font-bold text-muted-foreground">#{index + 1}</span>
                 </div>
-                <div className="flex-shrink-0">
+                <div className="h-12 w-12 flex-shrink-0">
                   <ProfilePhoto name={user.name} username={user.username} photoUrl={user.profilePhoto} disableLink />
                 </div>
                 <div className="min-w-0 flex-1">

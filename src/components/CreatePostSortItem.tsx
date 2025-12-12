@@ -14,7 +14,7 @@ const animateLayoutChanges: AnimateLayoutChanges = (args) => {
   return true;
 };
 
-export function CreatePostSortItem({ type, url, onRemove }: GetVisualMedia & { onRemove: (id: string) => void }) {
+export function CreatePostSortItem({ type, url, mimeType, onRemove }: GetVisualMedia & { onRemove: (id: string) => void }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: url, animateLayoutChanges });
 
   const onRemoveClick = useCallback(() => onRemove(url), [onRemove, url]);
@@ -46,7 +46,7 @@ export function CreatePostSortItem({ type, url, onRemove }: GetVisualMedia & { o
         ) : (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video className="z-10 h-full w-full rounded-md object-cover">
-            <source src={url} />
+            <source src={url} type={mimeType || undefined} />
           </video>
         )}
       </div>

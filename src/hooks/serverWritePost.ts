@@ -65,6 +65,9 @@ export async function serverWritePost({ formData, type, postId }: Props) {
               create: savedFiles.map((savedFile) => ({
                 type: savedFile.type,
                 fileName: savedFile.fileName,
+                mimeType: savedFile.mimeType,
+                processingStatus: savedFile.processingStatus,
+                originalFileName: savedFile.originalFileName,
                 userId,
               })),
             },
@@ -136,6 +139,9 @@ export async function serverWritePost({ formData, type, postId }: Props) {
             create: savedFiles.map((savedFile) => ({
               type: savedFile.type,
               fileName: savedFile.fileName,
+              mimeType: savedFile.mimeType,
+              processingStatus: savedFile.processingStatus,
+              originalFileName: savedFile.originalFileName,
               userId,
             })),
           },
@@ -162,6 +168,7 @@ export async function serverWritePost({ formData, type, postId }: Props) {
 
     return NextResponse.json<GetPost>(await toGetPost(res));
   } catch (error) {
+    console.error('Error in serverWritePost:', error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(null, {
         status: 422,

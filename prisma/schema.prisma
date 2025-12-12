@@ -37,6 +37,18 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model OtpCode {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([code])
+}
+
 model User {
   // Do not change the `id` field, it must be permanent and immutable.
   id                 String              @id @default(cuid())
@@ -143,14 +155,17 @@ model CommentLike {
 }
 
 model VisualMedia {
-  id         Int             @id @default(autoincrement())
-  type       VisualMediaType @default(PHOTO)
-  fileName   String
-  uploadedAt DateTime        @default(now())
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  post       Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId     Int
+  id               Int                      @id @default(autoincrement())
+  type             VisualMediaType          @default(PHOTO)
+  fileName         String
+  mimeType         String?
+  processingStatus VideoProcessingStatus?   @default(PENDING)
+  originalFileName String?
+  uploadedAt       DateTime                 @default(now())
+  user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  post             Post                     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId           Int
 }
 
 // This Activity model is similar to this approach: https://stackoverflow.com/a/1766371/8434369
@@ -195,6 +210,13 @@ enum ActivityType {
 enum VisualMediaType {
   PHOTO
   VIDEO
+}
+
+enum VideoProcessingStatus {
+  PENDING      // Video uploaded, waiting to transcode
+  PROCESSING   // MediaConvert is transcoding
+  COMPLETED    // Transcode done, ready to play
+  FAILED       // Transcode failed
 }
 
 enum Gender {

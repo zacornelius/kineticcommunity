@@ -62,7 +62,7 @@ export default function VisualMediaSlider({
         </>
       )}
 
-      {visualMedia.map(({ type, url }) => {
+      {visualMedia.map(({ type, url, mimeType }) => {
         return (
           <SwiperSlide key={url}>
             <div className="swiper-zoom-container">
@@ -71,7 +71,7 @@ export default function VisualMediaSlider({
               ) : (
                 // eslint-disable-next-line jsx-a11y/media-has-caption
                 <video className="max-h-[75%]" autoPlay controls>
-                  <source src={url} type="video/mp4" />
+                  <source src={url} type={mimeType || 'video/mp4'} />
                   Your browser does not support the video tag.
                 </video>
               )}

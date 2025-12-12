@@ -9,12 +9,16 @@ export function PostVisualMedia({
   onClick,
   height,
   colSpan,
+  mimeType,
+  processingStatus,
 }: {
   type: VisualMediaType;
   url: string;
   onClick: () => void;
   height: string;
   colSpan: number;
+  mimeType?: string | null;
+  processingStatus?: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | null;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { pressProps, isPressed } = usePress({
@@ -43,6 +47,17 @@ export function PostVisualMedia({
       style={style}>
       {type === 'PHOTO' ? (
         <img src={url} alt="" className={cn('h-full w-full object-cover', isPressed && 'brightness-75')} />
+      ) : processingStatus === 'PROCESSING' || processingStatus === 'PENDING' ? (
+        <div className="flex h-full w-full items-center justify-center bg-muted">
+          <div className="text-center">
+            <div className="mb-2 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
+            <p className="text-sm text-muted-foreground">Processing video...</p>
+          </div>
+        </div>
+      ) : processingStatus === 'FAILED' ? (
+        <div className="flex h-full w-full items-center justify-center bg-destructive/10">
+          <p className="text-sm text-destructive">Video processing failed</p>
+        </div>
       ) : (
         // eslint-disable-next-line jsx-a11y/media-has-caption
         <video
@@ -53,7 +68,7 @@ export function PostVisualMedia({
           onClick={handleVideoInteraction}
           onDoubleClick={onClick}
           title="Double-click to open in fullscreen modal">
-          <source src={url} type="video/mp4" />
+          <source src={url} type={mimeType || 'video/mp4'} />
           Your browser does not support the video tag.
         </video>
       )}

@@ -3,7 +3,7 @@ import { Play } from '@/svg_components';
 import { VisualMediaType } from '@prisma/client';
 import { mergeProps, useFocusRing, usePress } from 'react-aria';
 
-export function GalleryItem({ type, url, onClick }: { type: VisualMediaType; url: string; onClick: () => void }) {
+export function GalleryItem({ type, url, onClick, mimeType }: { type: VisualMediaType; url: string; onClick: () => void; mimeType?: string | null }) {
   const { pressProps, isPressed } = usePress({
     onPress: onClick,
   });
@@ -27,7 +27,7 @@ export function GalleryItem({ type, url, onClick }: { type: VisualMediaType; url
           />
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video className="h-full w-full object-cover">
-            <source src={url} type="video/mp4" />
+            <source src={url} type={mimeType || 'video/mp4'} />
             Your browser does not support the video tag.
           </video>
         </>

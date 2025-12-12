@@ -41,6 +41,8 @@ export interface GetUser extends UserAfterSetUp {
 export interface GetVisualMedia {
   type: VisualMediaType;
   url: string;
+  mimeType?: string | null;
+  processingStatus?: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | null;
 }
 
 export interface VisualMediaModalType {

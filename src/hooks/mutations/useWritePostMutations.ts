@@ -43,14 +43,24 @@ export function useWritePostMutations({
 
   const createPostMutation = useMutation({
     mutationFn: async () => {
+      // Generate FormData first (before revoking blobs in onSuccess)
+      const formData = await generateFormData();
+      
       const res = await fetch(`/api/posts`, {
         method: 'POST',
-        body: await generateFormData(),
+        body: formData,
       });
 
       if (!res.ok) throw new Error(res.statusText);
       // Return the created post to be used by callbacks.
       return (await res.json()) as GetPost;
+    },
+    onMutate: async () => {
+      // Close modal immediately for better UX
+      exitCreatePostModal();
+      
+      // Show optimistic toast
+      showToast({ title: 'Posting...', type: 'success' });
     },
     onSuccess: (createdPost) => {
       // Create a query for the created post
@@ -78,11 +88,17 @@ export function useWritePostMutations({
           pageParams: newPageParams,
         };
       });
-      showToast({ title: 'Successfully Posted', type: 'success' });
+      
+      // Revoke blob URLs after successful upload
       revokeVisualMediaObjectUrls(visualMedia);
-      exitCreatePostModal();
+      
+      // Show success toast
+      showToast({ title: 'Posted!', type: 'success' });
     },
     onError: (err) => {
+      // Revoke blob URLs on error too
+      revokeVisualMediaObjectUrls(visualMedia);
+      
       notifyError(err, 'Error Creating Post');
     },
   });

@@ -21,6 +21,8 @@ export async function GET(request: Request, { params }: { params: { userId: stri
   const visualMedia: GetVisualMedia[] | null = res.map((item) => ({
     type: item.type,
     url: fileNameToUrl(item.fileName)!,
+    mimeType: item.mimeType,
+    processingStatus: item.processingStatus,
   }));
 
   return NextResponse.json(visualMedia);

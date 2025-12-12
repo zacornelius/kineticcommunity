@@ -28,6 +28,8 @@ export function PostVisualMediaContainer({ visualMedia }: { visualMedia: GetVisu
               key={item.url}
               type={item.type}
               url={item.url}
+              mimeType={item.mimeType}
+              processingStatus={item.processingStatus}
               height={numOfVisualMedia > 1 ? '300px' : '480px'}
               // If odd and numOfVisualMedia is < 4, the first image must take the full width.
               colSpan={isOdd(numOfVisualMedia) && numOfVisualMedia < 4 && i === 0 ? 2 : 1}
