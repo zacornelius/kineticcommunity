@@ -4,6 +4,9 @@ import { auth } from '@/auth';
 
 export const dynamic = 'force-dynamic';
 
+// Master admin email that cannot be removed
+const MASTER_ADMIN_EMAIL = 'zacornelius@gmail.com';
+
 /**
  * POST /api/admin/make-admin
  * Add or remove admin privileges for a user
@@ -34,6 +37,24 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'userId (string) and isAdmin (boolean) are required' },
         { status: 400 }
+      );
+    }
+
+    // Check if target user is the master admin
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+
+    if (!targetUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Prevent removing admin from master admin
+    if (!isAdmin && targetUser.email === MASTER_ADMIN_EMAIL) {
+      return NextResponse.json(
+        { error: 'Cannot remove admin privileges from master admin' },
+        { status: 403 }
       );
     }
 

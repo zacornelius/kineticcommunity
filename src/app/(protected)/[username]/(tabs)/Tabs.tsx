@@ -16,7 +16,7 @@ export default function Tabs({ isOwnProfile }: { isOwnProfile: boolean }) {
         { title: 'Photos', segment: `${parentLayoutSegment}/photos` },
         { title: 'About', segment: `${parentLayoutSegment}/about` },
         ...[isOwnProfile ? { title: 'Activity', segment: `${parentLayoutSegment}/activity` } : undefined],
-        ...[isOwnProfile && isAdmin ? { title: 'Alerts', segment: `${parentLayoutSegment}/alerts` } : undefined],
+        ...[isOwnProfile && isAdmin ? { title: 'Admin', segment: `${parentLayoutSegment}/admin` } : undefined],
       ].map((item) => {
         if (!item) return null;
         const { title, segment } = item;
