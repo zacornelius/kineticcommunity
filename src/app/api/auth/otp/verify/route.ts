@@ -56,31 +56,35 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create session token
-    const salt = 'authjs.session-token';
-    const token = await encode({
+    // Create JWT session token
+    const sessionMaxAge = 30 * 24 * 60 * 60; // 30 days in seconds
+    const sessionToken = await encode({
       token: {
         sub: user.id,
         email: user.email,
-        name: user.name,
+        name: user.name || user.username || user.email,
+        picture: user.image,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + sessionMaxAge,
       },
       secret: process.env.AUTH_SECRET!,
-      salt,
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: sessionMaxAge,
     });
 
-    // Set session cookie
+    // Set the NextAuth session cookie
     const cookieStore = await cookies();
-    const cookieName = process.env.NODE_ENV === 'production' 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieName = isProduction 
       ? '__Secure-authjs.session-token'
       : 'authjs.session-token';
     
-    cookieStore.set(cookieName, token, {
+    cookieStore.set(cookieName, sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: sessionMaxAge,
       path: '/',
+      ...(isProduction && { domain: '.kineticdogfood.com' }), // Set domain for production
     });
 
     // Return success
