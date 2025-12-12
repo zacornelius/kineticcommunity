@@ -70,6 +70,10 @@ export async function POST(request: Request) {
     // Create JWT token exactly like NextAuth does
     const secret = process.env.AUTH_SECRET!;
     const maxAge = 30 * 24 * 60 * 60; // 30 days
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieName = isProduction 
+      ? '__Secure-authjs.session-token'
+      : 'authjs.session-token';
     
     const token = await encode({
       token: {
@@ -80,15 +84,11 @@ export async function POST(request: Request) {
       },
       secret,
       maxAge,
-      salt: '', // Add empty salt parameter
+      salt: cookieName, // Use the cookie name as salt, just like NextAuth does
     });
 
     // Set the session cookie
     const cookieStore = await cookies();
-    const isProduction = process.env.NODE_ENV === 'production';
-    const cookieName = isProduction 
-      ? '__Secure-authjs.session-token'
-      : 'authjs.session-token';
     
     cookieStore.set(cookieName, token, {
       httpOnly: true,
