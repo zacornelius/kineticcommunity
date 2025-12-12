@@ -80,6 +80,7 @@ export async function POST(request: Request) {
       },
       secret,
       maxAge,
+      salt: '', // Add empty salt parameter
     });
 
     // Set the session cookie

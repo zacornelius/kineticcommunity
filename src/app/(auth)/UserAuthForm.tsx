@@ -73,15 +73,15 @@ export function UserAuthForm({ mode }: { mode: 'login' | 'register' }) {
       }));
       try {
         await signIn(provider, {
-          callbackUrl,
-        });
+        callbackUrl,
+      });
       } catch (error) {
         showToast({ type: 'error', title: 'Something went wrong' });
       } finally {
-        setLoading((prev) => ({
-          ...prev,
-          [provider]: false,
-        }));
+      setLoading((prev) => ({
+        ...prev,
+        [provider]: false,
+      }));
       }
     },
     [callbackUrl, showToast],
