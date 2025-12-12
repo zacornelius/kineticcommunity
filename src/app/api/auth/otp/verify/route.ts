@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma/prisma';
-import { encode } from 'next-auth/jwt';
-import { cookies } from 'next/headers';
+import { randomUUID } from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,41 +66,39 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create JWT session token
-    const sessionMaxAge = 30 * 24 * 60 * 60; // 30 days in seconds
-    const sessionToken = await encode({
-      token: {
-        sub: user.id,
-        email: user.email,
-        name: user.name || user.username || user.email,
-        picture: user.image,
+    // Create a database session for NextAuth
+    const sessionToken = randomUUID();
+    const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
+    await prisma.session.create({
+      data: {
+        sessionToken,
+        userId: user.id,
+        expires: sessionExpiry,
       },
-      secret: process.env.AUTH_SECRET!,
-      maxAge: sessionMaxAge,
     });
 
-    // Set the NextAuth session cookie
-    const cookieStore = await cookies();
-    const isProduction = process.env.NODE_ENV === 'production';
-    const cookieName = isProduction 
-      ? '__Secure-authjs.session-token'
-      : 'authjs.session-token';
-    
-    cookieStore.set(cookieName, sessionToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      maxAge: sessionMaxAge,
-      path: '/',
-      ...(isProduction && { domain: '.kineticdogfood.com' }), // Set domain for production
-    });
-
-    // Return success
-    return NextResponse.json({
+    // Set the session cookie
+    const response = NextResponse.json({
       success: true,
       userId: user.id,
       email: user.email,
     });
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieName = isProduction 
+      ? '__Secure-authjs.session-token'
+      : 'authjs.session-token';
+
+    response.cookies.set(cookieName, sessionToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      expires: sessionExpiry,
+      path: '/',
+    });
+
+    return response;
   } catch (error) {
     console.error('Failed to verify OTP:', error);
     return NextResponse.json({ error: 'Failed to verify OTP' }, { status: 500 });

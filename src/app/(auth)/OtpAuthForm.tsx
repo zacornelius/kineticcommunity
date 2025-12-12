@@ -96,7 +96,7 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
         return;
       }
 
-      // Session is now set via cookie, redirect to callback URL
+      // Session created successfully, redirect to callback URL
       showToast({
         type: 'success',
         title: 'Signed in successfully!',
