@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Find valid OTP code
+    console.log('Looking for OTP:', { email: email.toLowerCase(), code: code.trim() });
+    
     const otpRecord = await prisma.otpCode.findFirst({
       where: {
         email: email.toLowerCase(),
@@ -25,7 +27,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    console.log('OTP Record found:', otpRecord ? 'YES' : 'NO');
+
     if (!otpRecord) {
+      // Check if there's any OTP for this email
+      const anyOtp = await prisma.otpCode.findMany({
+        where: { email: email.toLowerCase() },
+        orderBy: { createdAt: 'desc' },
+        take: 3,
+      });
+      console.log('Recent OTPs for email:', anyOtp);
       return NextResponse.json({ error: 'Invalid or expired code' }, { status: 401 });
     }
 
