@@ -96,13 +96,13 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
         return;
       }
 
-      // Session created successfully, redirect to callback URL
+      // Session cookie set, redirect to callback URL
       showToast({
         type: 'success',
         title: 'Signed in successfully!',
       });
       
-      // Small delay to show toast, then redirect
+      // Redirect to callback URL
       setTimeout(() => {
         window.location.href = callbackUrl;
       }, 500);

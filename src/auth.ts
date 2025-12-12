@@ -21,6 +21,30 @@ export const {
   ...authConfig,
   providers: [
     ...authConfig.providers,
+    Credentials({
+      id: 'otp',
+      name: 'OTP',
+      credentials: {
+        email: { label: "Email", type: "email" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email) return null;
+        
+        // Find user by email
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email as string },
+        });
+        
+        if (!user) return null;
+        
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name || user.username,
+          image: user.image,
+        };
+      },
+    }),
     {
       // There's currently an issue with NextAuth that requires all these properties to be specified
       // even if we really only need the `sendVerificationRequest`: https://github.com/nextauthjs/next-auth/issues/8125
@@ -98,7 +122,7 @@ export const {
   ],
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: 'database',
+    strategy: 'jwt',
   },
   callbacks: {
     ...authConfig.callbacks,

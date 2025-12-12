@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma/prisma';
-import { randomUUID } from 'crypto';
+import { cookies } from 'next/headers';
+import { encode } from 'next-auth/jwt';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const { email, code } = await request.json();
 
@@ -66,39 +67,41 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create a database session for NextAuth
-    const sessionToken = randomUUID();
-    const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-
-    await prisma.session.create({
-      data: {
-        sessionToken,
-        userId: user.id,
-        expires: sessionExpiry,
+    // Create JWT token exactly like NextAuth does
+    const secret = process.env.AUTH_SECRET!;
+    const maxAge = 30 * 24 * 60 * 60; // 30 days
+    
+    const token = await encode({
+      token: {
+        email: user.email,
+        sub: user.id,
+        name: user.name || user.username,
+        picture: user.image,
       },
+      secret,
+      maxAge,
     });
 
     // Set the session cookie
-    const response = NextResponse.json({
-      success: true,
-      userId: user.id,
-      email: user.email,
-    });
-
+    const cookieStore = await cookies();
     const isProduction = process.env.NODE_ENV === 'production';
     const cookieName = isProduction 
       ? '__Secure-authjs.session-token'
       : 'authjs.session-token';
-
-    response.cookies.set(cookieName, sessionToken, {
+    
+    cookieStore.set(cookieName, token, {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
-      expires: sessionExpiry,
+      maxAge,
       path: '/',
     });
 
-    return response;
+    return NextResponse.json({
+      success: true,
+      userId: user.id,
+      email: user.email,
+    });
   } catch (error) {
     console.error('Failed to verify OTP:', error);
     return NextResponse.json({ error: 'Failed to verify OTP' }, { status: 500 });
