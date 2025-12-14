@@ -14,7 +14,22 @@ export async function POST() {
       ALTER TABLE "VisualMedia" ADD COLUMN IF NOT EXISTS "thumbnailUrl" TEXT;
     `);
     
-    // 2. Update master admin email
+    // 2. Create AnnouncementDismissal table if it doesn't exist
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "AnnouncementDismissal" (
+        "userId" TEXT NOT NULL,
+        "postId" INTEGER NOT NULL,
+        "dismissedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        
+        CONSTRAINT "AnnouncementDismissal_pkey" PRIMARY KEY ("userId","postId"),
+        CONSTRAINT "AnnouncementDismissal_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT "AnnouncementDismissal_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `);
+    console.log('✓ AnnouncementDismissal table created');
+    console.log('✓ AnnouncementDismissal table created');
+    
+    // 3. Update master admin email
     const user = await prisma.user.update({
       where: { username: 'zacornelius' },
       data: { 
