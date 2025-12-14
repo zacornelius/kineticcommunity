@@ -107,7 +107,7 @@ export function Announcements() {
 
             <div className="p-4">
               {announcement.content && (
-                <p className="mb-2 text-sm whitespace-pre-wrap">{announcement.content}</p>
+                <p className="mb-2 text-sm">{announcement.content}</p>
               )}
               <p className="text-xs text-muted-foreground">
                 By {announcement.user.name} •{' '}
