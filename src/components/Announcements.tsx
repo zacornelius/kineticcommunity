@@ -116,7 +116,7 @@ export function Announcements() {
       </div>
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide snap-x snap-mandatory"
+        className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
         onScroll={(e) => {
           const scrollLeft = e.currentTarget.scrollLeft;
           const cardWidth = e.currentTarget.offsetWidth;
@@ -125,7 +125,7 @@ export function Announcements() {
             setCurrentIndex(newIndex);
           }
         }}>
-        {announcements.map((announcement) => (
+        {announcements.map((announcement, index) => (
           <div
             key={announcement.id}
             className="relative flex-shrink-0 w-full snap-start rounded-lg border border-border bg-background overflow-hidden">
