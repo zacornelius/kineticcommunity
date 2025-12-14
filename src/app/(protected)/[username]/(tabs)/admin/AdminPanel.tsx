@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/hooks/useToast';
+import { AnnouncementForm } from './AnnouncementForm';
 
 interface AdminUser {
   id: string;
@@ -16,7 +17,7 @@ interface AdminUser {
 const MASTER_ADMIN_EMAIL = 'zacornelius@gmail.com'; // Master admin that cannot be removed
 
 export function AdminPanel({ userId }: { userId: string }) {
-  const [selectedTab, setSelectedTab] = useState<'admins' | 'alerts' | 'emails'>('admins');
+  const [selectedTab, setSelectedTab] = useState<'admins' | 'alert' | 'email' | 'post'>('admins');
   const queryClient = useQueryClient();
 
   // Fetch all admin users
@@ -76,25 +77,34 @@ export function AdminPanel({ userId }: { userId: string }) {
               ? 'border-b-2 border-primary text-primary'
               : 'text-muted-foreground hover:text-foreground'
           }`}>
-          Manage Admins
+          Admins
         </button>
         <button
-          onClick={() => setSelectedTab('alerts')}
+          onClick={() => setSelectedTab('alert')}
           className={`pb-2 px-4 font-medium transition-colors ${
-            selectedTab === 'alerts'
+            selectedTab === 'alert'
               ? 'border-b-2 border-primary text-primary'
               : 'text-muted-foreground hover:text-foreground'
           }`}>
-          Create Alerts
+          Alert
         </button>
         <button
-          onClick={() => setSelectedTab('emails')}
+          onClick={() => setSelectedTab('email')}
           className={`pb-2 px-4 font-medium transition-colors ${
-            selectedTab === 'emails'
+            selectedTab === 'email'
               ? 'border-b-2 border-primary text-primary'
               : 'text-muted-foreground hover:text-foreground'
           }`}>
-          Group Emails
+          Email
+        </button>
+        <button
+          onClick={() => setSelectedTab('post')}
+          className={`pb-2 px-4 font-medium transition-colors ${
+            selectedTab === 'post'
+              ? 'border-b-2 border-primary text-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}>
+          Post
         </button>
       </div>
 
@@ -145,17 +155,25 @@ export function AdminPanel({ userId }: { userId: string }) {
         </div>
       )}
 
-      {selectedTab === 'alerts' && (
+      {selectedTab === 'alert' && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Create Site Alert</h2>
           <p className="text-muted-foreground">Coming soon: Create and manage site-wide alerts</p>
         </div>
       )}
 
-      {selectedTab === 'emails' && (
+      {selectedTab === 'email' && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Send Group Email</h2>
           <p className="text-muted-foreground">Coming soon: Send emails to all followers</p>
+        </div>
+      )}
+
+      {selectedTab === 'post' && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Create Announcement</h2>
+          <p className="text-muted-foreground mb-4">Create announcements that appear on the Home page</p>
+          <AnnouncementForm />
         </div>
       )}
     </div>
