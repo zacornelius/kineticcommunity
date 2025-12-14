@@ -62,10 +62,10 @@ export function Announcements() {
         {announcements.map((announcement) => (
           <div
             key={announcement.id}
-            className="relative flex-shrink-0 w-[85vw] sm:w-80 md:w-96 rounded-lg border border-border bg-background overflow-hidden">
+            className="relative flex-shrink-0 w-full sm:w-80 md:w-96 rounded-lg border border-border bg-background overflow-hidden">
             <button
               onClick={() => dismissMutation.mutate(announcement.id)}
-              className="absolute right-2 top-2 z-10 rounded-full p-1 bg-background/80 hover:bg-muted backdrop-blur-sm"
+              className="absolute right-2 top-2 z-10 rounded-full p-1.5 bg-background/90 hover:bg-muted backdrop-blur-sm border border-border shadow-sm"
               aria-label="Dismiss">
               <Close className="h-4 w-4" />
             </button>
@@ -107,7 +107,7 @@ export function Announcements() {
 
             <div className="p-4">
               {announcement.content && (
-                <p className="mb-2 text-sm">{announcement.content}</p>
+                <p className="mb-2 text-sm break-words">{announcement.content}</p>
               )}
               <p className="text-xs text-muted-foreground">
                 By {announcement.user.name} •{' '}
