@@ -1,8 +1,9 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Close } from '@/svg_components';
+import { Close, ArrowChevronBack, ArrowChevronForward } from '@/svg_components';
 import { VisualMediaType } from '@prisma/client';
+import { useRef, useState } from 'react';
 
 interface AnnouncementPost {
   id: number;
@@ -29,6 +30,8 @@ interface AnnouncementPost {
 
 export function Announcements() {
   const queryClient = useQueryClient();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data: announcements, isLoading } = useQuery<AnnouncementPost[]>({
     queryKey: ['announcements'],
@@ -49,20 +52,83 @@ export function Announcements() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      setCurrentIndex(0); // Reset to first announcement
     },
   });
+
+  const scrollToIndex = (index: number) => {
+    if (scrollRef.current && announcements) {
+      const cardWidth = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollTo({
+        left: cardWidth * index,
+        behavior: 'smooth',
+      });
+      setCurrentIndex(index);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      scrollToIndex(currentIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (announcements && currentIndex < announcements.length - 1) {
+      scrollToIndex(currentIndex + 1);
+    }
+  };
 
   if (isLoading) return null;
   if (!announcements || announcements.length === 0) return null;
 
+  const hasMultiple = announcements.length > 1;
+
   return (
     <div className="rounded-lg border border-border bg-card p-6">
-      <h2 className="mb-4 text-2xl font-bold">Announcements</h2>
-      <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-2xl font-bold">
+          Announcements
+          {hasMultiple && (
+            <span className="ml-2 text-sm font-normal text-muted-foreground">
+              {currentIndex + 1} of {announcements.length}
+            </span>
+          )}
+        </h2>
+        {hasMultiple && (
+          <div className="flex gap-2">
+            <button
+              onClick={handlePrevious}
+              disabled={currentIndex === 0}
+              className="rounded-full p-2 hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              aria-label="Previous announcement">
+              <ArrowChevronBack className="h-5 w-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentIndex === announcements.length - 1}
+              className="rounded-full p-2 hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              aria-label="Next announcement">
+              <ArrowChevronForward className="h-5 w-5" />
+            </button>
+          </div>
+        )}
+      </div>
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide snap-x snap-mandatory"
+        onScroll={(e) => {
+          const scrollLeft = e.currentTarget.scrollLeft;
+          const cardWidth = e.currentTarget.offsetWidth;
+          const newIndex = Math.round(scrollLeft / cardWidth);
+          if (newIndex !== currentIndex) {
+            setCurrentIndex(newIndex);
+          }
+        }}>
         {announcements.map((announcement) => (
           <div
             key={announcement.id}
-            className="relative flex-shrink-0 w-full sm:w-80 md:w-96 rounded-lg border border-border bg-background overflow-hidden">
+            className="relative flex-shrink-0 w-full snap-start rounded-lg border border-border bg-background overflow-hidden">
             <button
               onClick={() => dismissMutation.mutate(announcement.id)}
               className="absolute right-2 top-2 z-10 rounded-full p-1.5 bg-background/90 hover:bg-muted backdrop-blur-sm border border-border shadow-sm"
