@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Button from '@/components/ui/Button';
-import { showToast } from '@/hooks/useToast';
+import { useToast } from '@/hooks/useToast';
 import { AnnouncementForm } from './AnnouncementForm';
 
 interface AdminUser {
@@ -19,6 +19,7 @@ const MASTER_ADMIN_EMAIL = 'zacornelius@gmail.com'; // Master admin that cannot 
 export function AdminPanel({ userId }: { userId: string }) {
   const [selectedTab, setSelectedTab] = useState<'admins' | 'alert' | 'email' | 'post'>('admins');
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   // Fetch all admin users
   const { data: adminData, isLoading } = useQuery({

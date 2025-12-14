@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Button from '@/components/ui/Button';
-import { showToast } from '@/hooks/useToast';
+import { useToast } from '@/hooks/useToast';
 import { CreatePostSortItem } from '@/components/CreatePostSortItem';
 import { v4 as uuid } from 'uuid';
 
@@ -17,6 +17,7 @@ export function AnnouncementForm() {
   const [content, setContent] = useState('');
   const [visualMedia, setVisualMedia] = useState<VisualMediaFile[]>([]);
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const createMutation = useMutation({
     mutationFn: async () => {
