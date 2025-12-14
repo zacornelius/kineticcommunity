@@ -4,26 +4,40 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/hooks/useToast';
+import { CreatePostSortItem } from '@/components/CreatePostSortItem';
+import { v4 as uuid } from 'uuid';
+
+interface VisualMediaFile {
+  file: File;
+  id: string;
+  src: string;
+}
 
 export function AnnouncementForm() {
-  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [visualMedia, setVisualMedia] = useState<VisualMediaFile[]>([]);
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      const formData = new FormData();
+      formData.append('content', content);
+      visualMedia.forEach(({ file }) => {
+        formData.append('files', file);
+      });
+
       const res = await fetch('/api/announcements', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content }),
+        body: formData,
       });
       if (!res.ok) throw new Error('Failed to create announcement');
       return res.json();
     },
     onSuccess: () => {
       showToast({ title: 'Announcement created!', type: 'success' });
-      setTitle('');
       setContent('');
+      setVisualMedia([]);
+      visualMedia.forEach(({ src }) => URL.revokeObjectURL(src));
       queryClient.invalidateQueries({ queryKey: ['announcements'] });
     },
     onError: () => {
@@ -31,29 +45,32 @@ export function AnnouncementForm() {
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const newMedia = files.map((file) => ({
+      file,
+      id: uuid(),
+      src: URL.createObjectURL(file),
+    }));
+    setVisualMedia((prev) => [...prev, ...newMedia]);
+  };
+
+  const handleRemoveMedia = (id: string) => {
+    setVisualMedia((prev) => {
+      const mediaToRemove = prev.find((m) => m.id === id);
+      if (mediaToRemove) URL.revokeObjectURL(mediaToRemove.src);
+      return prev.filter((m) => m.id !== id);
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    if (!content.trim() && visualMedia.length === 0) return;
     createMutation.mutate();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl">
-      <div>
-        <label htmlFor="title" className="block text-sm font-medium mb-2">
-          Title
-        </label>
-        <input
-          id="title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Announcement title..."
-          className="w-full rounded-lg border border-border bg-background px-4 py-2 outline-none focus:ring-2 focus:ring-primary"
-          maxLength={100}
-        />
-      </div>
-
       <div>
         <label htmlFor="content" className="block text-sm font-medium mb-2">
           Content
@@ -72,9 +89,41 @@ export function AnnouncementForm() {
         </p>
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-2">Media</label>
+        <input
+          type="file"
+          multiple
+          accept="image/*,video/*"
+          onChange={handleFileChange}
+          className="hidden"
+          id="media-upload"
+        />
+        <label
+          htmlFor="media-upload"
+          className="inline-block px-4 py-2 rounded-lg border border-border bg-background cursor-pointer hover:bg-muted transition-colors">
+          Add Photos/Videos
+        </label>
+
+        {visualMedia.length > 0 && (
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {visualMedia.map((media) => (
+              <CreatePostSortItem
+                key={media.id}
+                id={media.id}
+                file={media.file}
+                mimeType={media.file.type}
+                src={media.src}
+                onRemove={() => handleRemoveMedia(media.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
       <Button
         type="submit"
-        disabled={!title.trim() || !content.trim() || createMutation.isPending}
+        disabled={(!content.trim() && visualMedia.length === 0) || createMutation.isPending}
         loading={createMutation.isPending}>
         Create Announcement
       </Button>

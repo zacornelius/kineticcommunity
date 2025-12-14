@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * POST /api/announcements
- * Create a new announcement (admin only)
+ * Create a new announcement post (admin only)
  */
 export async function POST(request: Request) {
   try {
@@ -21,32 +21,52 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const { title, content } = await request.json();
+    const formData = await request.formData();
+    const content = formData.get('content') as string;
+    const files = formData.getAll('files') as File[];
 
-    if (!title || !content) {
+    if (!content && files.length === 0) {
       return NextResponse.json(
-        { error: 'Title and content are required' },
+        { error: 'Content or media is required' },
         { status: 400 }
       );
     }
 
-    const announcement = await prisma.announcement.create({
+    // Import savePostFiles dynamically to avoid circular dependencies
+    const { savePostFiles } = await import('@/lib/s3/savePostFiles');
+    const savedFiles = files.length > 0 ? await savePostFiles(files) : [];
+
+    const post = await prisma.post.create({
       data: {
-        title,
         content,
+        isAnnouncement: true,
         userId: user.id,
+        ...(savedFiles.length > 0 && {
+          visualMedia: {
+            create: savedFiles.map((savedFile) => ({
+              type: savedFile.type,
+              fileName: savedFile.fileName,
+              mimeType: savedFile.mimeType,
+              processingStatus: savedFile.processingStatus,
+              originalFileName: savedFile.originalFileName,
+              thumbnailUrl: savedFile.thumbnailUrl,
+              userId: user.id,
+            })),
+          },
+        }),
       },
       include: {
-        createdBy: {
+        user: {
           select: {
             name: true,
             username: true,
           },
         },
+        visualMedia: true,
       },
     });
 
-    return NextResponse.json(announcement);
+    return NextResponse.json(post);
   } catch (error) {
     console.error('Error creating announcement:', error);
     return NextResponse.json(
@@ -58,7 +78,7 @@ export async function POST(request: Request) {
 
 /**
  * GET /api/announcements
- * Get all announcements that haven't been dismissed by the current user
+ * Get all announcement posts that haven't been dismissed by the current user
  */
 export async function GET() {
   try {
@@ -67,8 +87,9 @@ export async function GET() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const announcements = await prisma.announcement.findMany({
+    const posts = await prisma.post.findMany({
       where: {
+        isAnnouncement: true,
         dismissals: {
           none: {
             userId: user.id,
@@ -76,10 +97,18 @@ export async function GET() {
         },
       },
       include: {
-        createdBy: {
+        user: {
           select: {
             name: true,
             username: true,
+            image: true,
+          },
+        },
+        visualMedia: true,
+        _count: {
+          select: {
+            postLikes: true,
+            comments: true,
           },
         },
       },
@@ -89,7 +118,7 @@ export async function GET() {
       take: 10, // Limit to 10 most recent
     });
 
-    return NextResponse.json(announcements);
+    return NextResponse.json(posts);
   } catch (error) {
     console.error('Error fetching announcements:', error);
     return NextResponse.json(

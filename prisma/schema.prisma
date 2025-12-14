@@ -81,7 +81,6 @@ model User {
   activities         Activity[]          @relation("activity")
   notifications      Activity[]          @relation("notification")
   pushSubscriptions  PushSubscription[]
-  announcements      Announcement[]
   announcementDismissals AnnouncementDismissal[]
 }
 
@@ -104,14 +103,18 @@ model Follow {
 }
 
 model Post {
-  id          Int           @id @default(autoincrement())
-  content     String?
-  createdAt   DateTime      @default(now())
-  visualMedia VisualMedia[]
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  postLikes   PostLike[]
-  comments    Comment[]
+  id             Int           @id @default(autoincrement())
+  content        String?
+  createdAt      DateTime      @default(now())
+  isAnnouncement Boolean       @default(false)
+  visualMedia    VisualMedia[]
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  postLikes      PostLike[]
+  comments       Comment[]
+  dismissals     AnnouncementDismissal[]
+
+  @@index([isAnnouncement, createdAt(sort: Desc)])
 }
 
 model PostLike {
@@ -235,27 +238,15 @@ enum RelationshipStatus {
   MARRIED
 }
 
-model Announcement {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  createdBy User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  dismissals AnnouncementDismissal[]
-
-  @@index([createdAt(sort: Desc)])
-}
-
 model AnnouncementDismissal {
-  id             Int          @id @default(autoincrement())
-  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-  announcementId Int
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
-  dismissedAt    DateTime     @default(now())
+  id          Int      @id @default(autoincrement())
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  dismissedAt DateTime @default(now())
 
-  @@unique([announcementId, userId])
+  @@unique([postId, userId])
   @@index([userId])
 }
 

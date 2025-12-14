@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * POST /api/announcements/[id]/dismiss
- * Dismiss an announcement for the current user
+ * Dismiss an announcement post for the current user
  */
 export async function POST(
   request: Request,
@@ -18,14 +18,14 @@ export async function POST(
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const announcementId = parseInt(params.id);
-    if (isNaN(announcementId)) {
-      return NextResponse.json({ error: 'Invalid announcement ID' }, { status: 400 });
+    const postId = parseInt(params.id);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
     }
 
     await prisma.announcementDismissal.create({
       data: {
-        announcementId,
+        postId,
         userId: user.id,
       },
     });
