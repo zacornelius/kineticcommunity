@@ -57,12 +57,12 @@ export function Announcements() {
 
   return (
     <div className="mb-6">
-      <h2 className="mb-3 text-lg font-semibold">Announcements</h2>
-      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+      <h2 className="mb-3 text-lg font-semibold px-0">Announcements</h2>
+      <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
         {announcements.map((announcement) => (
           <div
             key={announcement.id}
-            className="relative flex-shrink-0 w-80 rounded-lg border bg-card shadow-sm overflow-hidden">
+            className="relative flex-shrink-0 w-[85vw] sm:w-80 md:w-96 rounded-lg border bg-card shadow-sm overflow-hidden">
             <button
               onClick={() => dismissMutation.mutate(announcement.id)}
               className="absolute right-2 top-2 z-10 rounded-full p-1 bg-background/80 hover:bg-muted backdrop-blur-sm"
@@ -71,7 +71,7 @@ export function Announcements() {
             </button>
 
             {announcement.visualMedia.length > 0 && (
-              <div className="relative w-full h-48 bg-muted">
+              <div className="relative w-full h-48 sm:h-56 bg-muted">
                 {announcement.visualMedia[0].type === 'PHOTO' ? (
                   <img
                     src={`${process.env.NEXT_PUBLIC_S3_BUCKET_URL}/${announcement.visualMedia[0].fileName}`}
