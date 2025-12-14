@@ -90,7 +90,7 @@ export function Announcements() {
         <h2 className="text-2xl font-bold">
           Announcements
           {hasMultiple && (
-            <span className="ml-2 text-sm font-normal text-muted-foreground">
+            <span className="ml-2 text-sm font-normal text-muted-foreground whitespace-nowrap">
               {currentIndex + 1} of {announcements.length}
             </span>
           )}
