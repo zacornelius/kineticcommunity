@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X } from '@/svg_components';
+import { Close } from '@/svg_components';
 import { VisualMediaType } from '@prisma/client';
 
 interface AnnouncementPost {
@@ -67,7 +67,7 @@ export function Announcements() {
               onClick={() => dismissMutation.mutate(announcement.id)}
               className="absolute right-2 top-2 z-10 rounded-full p-1 bg-background/80 hover:bg-muted backdrop-blur-sm"
               aria-label="Dismiss">
-              <X className="h-4 w-4" />
+              <Close className="h-4 w-4" />
             </button>
 
             {announcement.visualMedia.length > 0 && (
