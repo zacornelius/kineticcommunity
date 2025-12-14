@@ -10,6 +10,7 @@ export function PostVisualMedia({
   height,
   colSpan,
   mimeType,
+  thumbnailUrl,
   processingStatus,
 }: {
   type: VisualMediaType;
@@ -18,6 +19,7 @@ export function PostVisualMedia({
   height: string;
   colSpan: number;
   mimeType?: string | null;
+  thumbnailUrl?: string | null;
   processingStatus?: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | null;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -65,6 +67,7 @@ export function PostVisualMedia({
           className="h-full w-full object-cover"
           controls
           playsInline
+          poster={thumbnailUrl ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/${thumbnailUrl}` : undefined}
           onClick={handleVideoInteraction}
           onDoubleClick={onClick}
           title="Double-click to open in fullscreen modal">

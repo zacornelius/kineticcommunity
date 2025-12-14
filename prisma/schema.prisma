@@ -159,6 +159,7 @@ model VisualMedia {
   type             VisualMediaType          @default(PHOTO)
   fileName         String
   mimeType         String?
+  thumbnailUrl     String?
   processingStatus VideoProcessingStatus?   @default(PENDING)
   originalFileName String?
   uploadedAt       DateTime                 @default(now())

@@ -20,10 +20,11 @@ export async function toGetPost(findPostResult: FindPostResult): Promise<GetPost
     reverse: true,
   });
 
-  const visualMedia: GetVisualMedia[] = rest.visualMedia.map(({ type, fileName, mimeType, processingStatus }) => ({
+  const visualMedia: GetVisualMedia[] = rest.visualMedia.map(({ type, fileName, mimeType, thumbnailUrl, processingStatus }) => ({
     type,
     url: fileNameToUrl(fileName) as string,
     mimeType,
+    thumbnailUrl,
     processingStatus,
   }));
 

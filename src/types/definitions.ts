@@ -42,6 +42,7 @@ export interface GetVisualMedia {
   type: VisualMediaType;
   url: string;
   mimeType?: string | null;
+  thumbnailUrl?: string | null;
   processingStatus?: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | null;
 }
 

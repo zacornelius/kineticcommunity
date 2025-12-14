@@ -29,6 +29,7 @@ export function PostVisualMediaContainer({ visualMedia }: { visualMedia: GetVisu
               type={item.type}
               url={item.url}
               mimeType={item.mimeType}
+              thumbnailUrl={item.thumbnailUrl}
               processingStatus={item.processingStatus}
               height={numOfVisualMedia > 1 ? '300px' : '480px'}
               // If odd and numOfVisualMedia is < 4, the first image must take the full width.

@@ -22,6 +22,7 @@ export async function savePostFiles(files: (Blob | string)[]) {
     type: VisualMediaType;
     fileName: string;
     mimeType: string | null;
+    thumbnailUrl?: string | null;
     processingStatus: VideoProcessingStatus | null;
     originalFileName: string | null;
   }>[] = files.map(async (file) => {
@@ -79,6 +80,7 @@ export async function savePostFiles(files: (Blob | string)[]) {
         type,
         fileName: transcodedFileName,
         mimeType: 'video/mp4',
+        thumbnailUrl: `${baseFileName}_thumb.0000000.jpg`, // MediaConvert will generate this
         processingStatus: 'PROCESSING',
         originalFileName,
       };

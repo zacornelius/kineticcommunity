@@ -85,6 +85,37 @@ export async function transcodeVideo({ inputFileName, outputFileName }: Transcod
             },
           ],
         },
+        // Add thumbnail output group
+        {
+          Name: 'Thumbnail Group',
+          OutputGroupSettings: {
+            Type: 'FILE_GROUP_SETTINGS',
+            FileGroupSettings: {
+              Destination: `${outputS3Directory}${baseNameWithoutExt}`,
+            },
+          },
+          Outputs: [
+            {
+              ContainerSettings: {
+                Container: 'RAW',
+              },
+              VideoDescription: {
+                CodecSettings: {
+                  Codec: 'FRAME_CAPTURE',
+                  FrameCaptureSettings: {
+                    FramerateNumerator: 1,
+                    FramerateDenominator: 2, // Capture 1 frame every 2 seconds (we only need one)
+                    MaxCaptures: 1, // Only capture first frame
+                    Quality: 80,
+                  },
+                },
+                ScalingBehavior: 'DEFAULT',
+              },
+              Extension: 'jpg',
+              NameModifier: '_thumb',
+            },
+          ],
+        },
       ],
     },
     StatusUpdateInterval: 'SECONDS_60',
