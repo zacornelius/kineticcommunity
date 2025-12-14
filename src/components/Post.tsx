@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { usePostLikesMutations } from '@/hooks/mutations/usePostLikesMutations';
 import { ToggleStepper } from './ui/ToggleStepper';
 import { Comments } from './Comments';
+import { CommentSheet } from './CommentSheet';
 import { PostVisualMediaContainer } from './PostVisualMediaContainer';
 import ProfileBlock from './ProfileBlock';
 import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
@@ -175,13 +176,22 @@ export const Post = memo(
           />
         </div>
 
-        <AnimatePresence>
+        {/* Hide inline comments - now using modal */}
+        {/* <AnimatePresence>
           {commentsShown && (
             <motion.div key={`${postId}-comments`} variants={variants} initial={false} animate="animate" exit="exit">
               <Comments postId={postId} />
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
+
+        {/* Instagram-style Comment Sheet */}
+        <CommentSheet
+          postId={postId}
+          isOpen={commentsShown || false}
+          onClose={() => toggleComments(postId)}
+          commentCount={_count.comments}
+        />
       </div>
     );
   },

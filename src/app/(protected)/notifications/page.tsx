@@ -1,6 +1,6 @@
 import { getServerUser } from '@/lib/getServerUser';
 import { Notifications } from './Notifications';
-import { PageHeader } from '@/components/PageHeader';
+import { TopBar } from '@/components/TopBar';
 import { NotificationsHeader } from './NotificationsHeader';
 
 export const metadata = {
@@ -12,11 +12,15 @@ export default async function Page() {
 
   if (!user) return null;
   return (
-    <div className="px-4 pt-4">
-      <PageHeader action={<NotificationsHeader />}>
-        <h1 className="text-4xl font-bold">Notifications</h1>
-      </PageHeader>
-      <Notifications userId={user.id} />
-    </div>
+    <>
+      <TopBar title="Notifications" />
+      <div className="px-4 pt-20 md:pt-4">
+        <div className="mb-4 flex items-center justify-end md:justify-between">
+          <h1 className="hidden text-4xl font-bold md:block">Notifications</h1>
+          <NotificationsHeader />
+        </div>
+        <Notifications userId={user.id} />
+      </div>
+    </>
   );
 }

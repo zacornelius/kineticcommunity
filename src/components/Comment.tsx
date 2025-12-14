@@ -34,10 +34,12 @@ export const Comment = memo(
     repliesShown,
     setRepliesVisibility,
     queryKey,
+    onReply,
   }: GetComment & {
     isOwnComment: boolean;
     setRepliesVisibility: (params: { commentId: number; shown: boolean }) => void;
     queryKey: QueryKey;
+    onReply?: (reply: { commentId: number; username: string }) => void;
   }) => {
     const numberOfLikes = _count.commentLikes;
     const numberOfReplies = _count.replies;
@@ -56,6 +58,13 @@ export const Comment = memo(
       [commentId, repliesShown, setRepliesVisibility],
     );
     const handleCreateReply = useCallback(() => {
+      // If onReply callback exists (in modal), use it
+      if (onReply) {
+        onReply({ commentId, username: author.username });
+        return;
+      }
+
+      // Otherwise, use the old prompt dialog
       prompt({
         title: 'Reply',
         message: `You are replying to ${author.name}'s comment.`,
@@ -72,7 +81,7 @@ export const Comment = memo(
           );
         },
       });
-    }, [author.name, commentId, createReplyMutation, prompt, repliesShown, toggleReplies]);
+    }, [author.name, author.username, commentId, createReplyMutation, prompt, repliesShown, toggleReplies, onReply]);
     const handleLikeToggle = useCallback(
       (isSelected: boolean) => (isSelected ? likeComment({ commentId }) : unLikeComment({ commentId })),
       [commentId, likeComment, unLikeComment],

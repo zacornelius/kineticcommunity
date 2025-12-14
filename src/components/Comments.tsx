@@ -11,7 +11,7 @@ import { commentFramerVariants } from '@/lib/framerVariants';
 import { CommentCreate } from './CommentCreate';
 import { Comment } from './Comment';
 
-export function Comments({ postId }: { postId: number }) {
+export function Comments({ postId, onReply }: { postId: number; onReply?: (reply: { commentId: number; username: string }) => void }) {
   const qc = useQueryClient();
   const queryKey = useMemo(() => ['posts', postId, 'comments'], [postId]);
 
@@ -74,6 +74,7 @@ export function Comments({ postId }: { postId: number }) {
                     {...{
                       setRepliesVisibility,
                       queryKey,
+                      onReply,
                     }}
                     isOwnComment={session?.user?.id === comment.user.id}
                   />
@@ -85,7 +86,7 @@ export function Comments({ postId }: { postId: number }) {
           </AnimatePresence>
         )}
       </div>
-      <CommentCreate postId={postId} />
+      {!onReply && <CommentCreate postId={postId} />}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { DiscoverFilters } from '@/components/DiscoverFilters';
 import { DiscoverProfiles } from '@/components/DiscoverProfiles';
 import { DiscoverSearch } from '@/components/DiscoverSearch';
-import { PageHeader } from '@/components/PageHeader';
+import { TopBar } from '@/components/TopBar';
 
 export const metadata = {
   title: 'Munia | Discover',
@@ -9,13 +9,13 @@ export const metadata = {
 
 export default async function Discover() {
   return (
-    <div className="px-4 pt-4">
-      <PageHeader>
-        <h1 className="text-4xl font-bold">Discover</h1>
-      </PageHeader>
-      <DiscoverSearch />
-      <DiscoverFilters />
-      <DiscoverProfiles />
-    </div>
+    <>
+      <TopBar title="Discover" />
+      <div className="px-4 pt-20 md:pt-4">
+        <DiscoverSearch />
+        <DiscoverFilters />
+        <DiscoverProfiles />
+      </div>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { GetComment } from '@/types/definitions';
+import { GetComment, GetPost } from '@/types/definitions';
 import { useErrorNotifier } from '../useErrorNotifier';
 import { useToast } from '../useToast';
 
@@ -24,10 +24,24 @@ export function useCreateCommentMutations() {
       return (await res.json()) as GetComment;
     },
     onSuccess: (createdComment) => {
+      // Add comment to comments list
       qc.setQueryData<GetComment[]>(['posts', createdComment.postId, 'comments'], (oldComments) => {
         if (!oldComments) return oldComments;
         return [...oldComments, createdComment];
       });
+      
+      // Increment comment count on the post
+      qc.setQueryData<GetPost>(['posts', createdComment.postId], (oldPost) => {
+        if (!oldPost) return oldPost;
+        return {
+          ...oldPost,
+          _count: {
+            ...oldPost._count,
+            comments: oldPost._count.comments + 1,
+          },
+        };
+      });
+      
       showToast({
         title: 'Success',
         message: 'Your comment has been created.',
@@ -55,10 +69,43 @@ export function useCreateCommentMutations() {
       return (await res.json()) as GetComment;
     },
     onSuccess: (createdReply) => {
+      // Add reply to replies list
       qc.setQueryData<GetComment[]>(['comments', createdReply.parentId, 'replies'], (oldReplies) => {
         if (!oldReplies) return oldReplies;
         return [...oldReplies, createdReply];
       });
+      
+      // Increment reply count on the parent comment
+      // We need to find the comment in the post's comments list
+      const postId = createdReply.postId;
+      qc.setQueryData<GetComment[]>(['posts', postId, 'comments'], (oldComments) => {
+        if (!oldComments) return oldComments;
+        return oldComments.map((comment) => {
+          if (comment.id === createdReply.parentId) {
+            return {
+              ...comment,
+              _count: {
+                ...comment._count,
+                replies: comment._count.replies + 1,
+              },
+            };
+          }
+          return comment;
+        });
+      });
+      
+      // Also increment total comment count on the post (replies count as comments)
+      qc.setQueryData<GetPost>(['posts', postId], (oldPost) => {
+        if (!oldPost) return oldPost;
+        return {
+          ...oldPost,
+          _count: {
+            ...oldPost._count,
+            comments: oldPost._count.comments + 1,
+          },
+        };
+      });
+      
       showToast({
         title: 'Success',
         message: 'Your reply has been created.',
