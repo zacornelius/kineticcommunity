@@ -63,7 +63,7 @@ export function MenuBar() {
             disableLink
           />
         </div>
-        <span className="mt-1 text-xs font-medium md:mt-0 md:text-base">Profile</span>
+        <span className="mt-1 text-xs font-medium md:mt-0 md:text-base md:inline hidden">Profile</span>
       </Link>
     </div>
   );

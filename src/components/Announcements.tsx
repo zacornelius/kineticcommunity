@@ -140,7 +140,7 @@ export function Announcements() {
               <div className="relative w-full h-48 sm:h-56 bg-muted">
                 {announcement.visualMedia[0].type === 'PHOTO' ? (
                   <img
-                    src={`${process.env.NEXT_PUBLIC_S3_BUCKET_URL}/${announcement.visualMedia[0].fileName}`}
+                    src={announcement.visualMedia[0].url}
                     alt=""
                     className="w-full h-full object-cover"
                   />
@@ -158,12 +158,10 @@ export function Announcements() {
                     controls
                     playsInline
                     poster={
-                      announcement.visualMedia[0].thumbnailUrl
-                        ? `${process.env.NEXT_PUBLIC_S3_BUCKET_URL}${announcement.visualMedia[0].thumbnailUrl}`
-                        : undefined
+                      announcement.visualMedia[0].thumbnailUrl || undefined
                     }>
                     <source
-                      src={`${process.env.NEXT_PUBLIC_S3_BUCKET_URL}/${announcement.visualMedia[0].fileName}`}
+                      src={announcement.visualMedia[0].url}
                       type={announcement.visualMedia[0].mimeType || 'video/mp4'}
                     />
                   </video>

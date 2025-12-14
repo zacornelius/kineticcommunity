@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma/prisma';
 import { isAdmin } from '@/lib/admin/isAdmin';
 import { getServerUser } from '@/lib/getServerUser';
+import { fileNameToUrl } from '@/lib/s3/fileNameToUrl';
 
 export const dynamic = 'force-dynamic';
 
@@ -118,7 +119,19 @@ export async function GET() {
       take: 10, // Limit to 10 most recent
     });
 
-    return NextResponse.json(posts);
+    // Transform visualMedia to include full URLs instead of just fileName
+    const transformedPosts = posts.map(post => ({
+      ...post,
+      visualMedia: post.visualMedia.map(media => ({
+        type: media.type,
+        url: fileNameToUrl(media.fileName) as string,
+        mimeType: media.mimeType,
+        thumbnailUrl: media.thumbnailUrl ? fileNameToUrl(media.thumbnailUrl) : null,
+        processingStatus: media.processingStatus,
+      })),
+    }));
+
+    return NextResponse.json(transformedPosts);
   } catch (error) {
     console.error('Error fetching announcements:', error);
     return NextResponse.json(
