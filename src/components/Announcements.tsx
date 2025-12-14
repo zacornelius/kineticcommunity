@@ -56,13 +56,13 @@ export function Announcements() {
   if (!announcements || announcements.length === 0) return null;
 
   return (
-    <div className="mb-6">
-      <h2 className="mb-3 text-lg font-semibold px-0">Announcements</h2>
-      <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+    <div className="rounded-lg border border-border bg-card p-6">
+      <h2 className="mb-4 text-2xl font-bold">Announcements</h2>
+      <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
         {announcements.map((announcement) => (
           <div
             key={announcement.id}
-            className="relative flex-shrink-0 w-[85vw] sm:w-80 md:w-96 rounded-lg border bg-card shadow-sm overflow-hidden">
+            className="relative flex-shrink-0 w-[85vw] sm:w-80 md:w-96 rounded-lg border border-border bg-background overflow-hidden">
             <button
               onClick={() => dismissMutation.mutate(announcement.id)}
               className="absolute right-2 top-2 z-10 rounded-full p-1 bg-background/80 hover:bg-muted backdrop-blur-sm"
