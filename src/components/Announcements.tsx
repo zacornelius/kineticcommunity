@@ -133,7 +133,7 @@ export function Announcements() {
               onClick={() => dismissMutation.mutate(announcement.id)}
               className="absolute right-2 top-2 z-10 rounded-full p-1.5 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 shadow-lg transition-colors"
               aria-label="Dismiss">
-              <Close className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+              <Close className="h-4 w-4" stroke="currentColor" strokeWidth={2} />
             </button>
 
             {announcement.visualMedia.length > 0 && (
