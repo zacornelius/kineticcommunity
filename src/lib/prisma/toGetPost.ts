@@ -24,7 +24,7 @@ export async function toGetPost(findPostResult: FindPostResult): Promise<GetPost
     type,
     url: fileNameToUrl(fileName) as string,
     mimeType,
-    thumbnailUrl,
+    thumbnailUrl: fileNameToUrl(thumbnailUrl),
     processingStatus,
   }));
 
