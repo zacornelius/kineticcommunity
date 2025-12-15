@@ -67,7 +67,7 @@ export function PostVisualMedia({
           className="h-full w-full object-cover"
           controls
           playsInline
-          poster={thumbnailUrl ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/${thumbnailUrl}` : undefined}
+          poster={thumbnailUrl || undefined}
           onClick={handleVideoInteraction}
           onDoubleClick={onClick}
           title="Double-click to open in fullscreen modal">
