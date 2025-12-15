@@ -25,10 +25,13 @@ export function CreatePostDialog({
   const mode: 'create' | 'edit' = toEditValues === null ? 'create' : 'edit';
   const [content, setContent] = useState(toEditValues?.initialContent || '');
   const [visualMedia, setVisualMedia] = useState<GetVisualMedia[]>(toEditValues?.initialVisualMedia ?? []);
+  // Store original File objects mapped by blob URL for proper upload
+  const fileMapRef = useRef<Map<string, File>>(new Map());
   const exitCreatePostModal = useCallback(() => setShown(false), [setShown]);
   const { createPostMutation, updatePostMutation } = useWritePostMutations({
     content,
     visualMedia,
+    fileMap: fileMapRef.current,
     exitCreatePostModal,
   });
   const { confirm } = useDialogs();
@@ -46,10 +49,16 @@ export function CreatePostDialog({
     // Store files array immediately before any async operations
     const filesArr = Array.from(files);
 
-    const selectedVisualMedia: GetVisualMedia[] = filesArr.map((file) => ({
-      type: file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO',
-      url: URL.createObjectURL(file),
-    }));
+    const selectedVisualMedia: GetVisualMedia[] = filesArr.map((file) => {
+      const blobUrl = URL.createObjectURL(file);
+      // Store the original File object for later upload
+      fileMapRef.current.set(blobUrl, file);
+      return {
+        type: file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO',
+        url: blobUrl,
+        mimeType: file.type,
+      };
+    });
 
     setVisualMedia((prev) => [...prev, ...selectedVisualMedia]);
 
@@ -168,7 +177,7 @@ export function CreatePostDialog({
             animate="animate"
             exit="exit"
             className="overflow-hidden">
-            <CreatePostSort visualMedia={visualMedia} setVisualMedia={setVisualMedia} />
+            <CreatePostSort visualMedia={visualMedia} setVisualMedia={setVisualMedia} fileMap={fileMapRef.current} />
           </motion.div>
         )}
       </AnimatePresence>

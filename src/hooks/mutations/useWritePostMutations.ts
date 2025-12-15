@@ -10,10 +10,12 @@ import { useErrorNotifier } from '../useErrorNotifier';
 export function useWritePostMutations({
   content,
   visualMedia,
+  fileMap,
   exitCreatePostModal,
 }: {
   content: string;
   visualMedia: GetVisualMedia[];
+  fileMap?: Map<string, File>;
   exitCreatePostModal: () => void;
 }) {
   const qc = useQueryClient();
@@ -28,9 +30,15 @@ export function useWritePostMutations({
 
     const visualMediaFilesPromises = visualMedia.map(async ({ url }) => {
       if (url.startsWith('blob:')) {
-        // If the url is a blob, fetch the blob and append it to the formData
-        const file = await fetch(url).then((r) => r.blob());
-        formData.append('files', file, file.name);
+        // Use the original File object if available (for proper filename and metadata)
+        const originalFile = fileMap?.get(url);
+        if (originalFile) {
+          formData.append('files', originalFile);
+        } else {
+          // Fallback: fetch the blob (loses filename)
+          const file = await fetch(url).then((r) => r.blob());
+          formData.append('files', file);
+        }
       } else {
         // If the url is a link, just append it to the formData
         formData.append('files', url);

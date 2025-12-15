@@ -24,9 +24,11 @@ const modifiers = [restrictToParentElement];
 export function CreatePostSort({
   visualMedia,
   setVisualMedia,
+  fileMap,
 }: {
   visualMedia: GetVisualMedia[];
   setVisualMedia: React.Dispatch<React.SetStateAction<GetVisualMedia[]>>;
+  fileMap?: Map<string, File>;
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -55,11 +57,15 @@ export function CreatePostSort({
   const handleRemove = useCallback(
     (id: string) => {
       // Release the object URL when removed
-      if (id.startsWith('blob:')) URL.revokeObjectURL(id);
+      if (id.startsWith('blob:')) {
+        URL.revokeObjectURL(id);
+        // Also remove from fileMap
+        fileMap?.delete(id);
+      }
 
       setVisualMedia((items) => items.filter((item) => item.url !== id));
     },
-    [setVisualMedia],
+    [setVisualMedia, fileMap],
   );
 
   // The `url` of <GetVisualMedia> will serve as the ID's of the <SortableContext>.
