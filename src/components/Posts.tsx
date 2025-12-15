@@ -16,6 +16,7 @@ import { ButtonNaked } from './ui/ButtonNaked';
 import { AllCaughtUp } from './AllCaughtUp';
 import { Post } from './Post';
 import { GenericLoading } from './GenericLoading';
+import { useVideoProcessingPolling } from '@/hooks/useVideoProcessingPolling';
 
 // If the `type` is 'profile' or 'feed', the `userId` property is required
 // If the `type` is 'hashtag', the `hashtag` property is required
@@ -47,6 +48,9 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
   const { shouldAnimate } = useShouldAnimate();
   // This keeps track of the number of pages loaded by the `fetchPreviousPage()`
   const [numberOfNewPostsLoaded, setNumberOfNewPostsLoaded] = useState(0);
+  
+  // Poll for video processing status updates
+  useVideoProcessingPolling();
 
   const {
     data,

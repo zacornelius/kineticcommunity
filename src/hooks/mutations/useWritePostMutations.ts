@@ -69,25 +69,69 @@ export function useWritePostMutations({
       
       // Show optimistic toast
       showToast({ title: 'Posting...', type: 'success' });
+      
+      // Create an optimistic post with a temporary negative ID
+      const optimisticId = -Date.now();
+      const optimisticPost: GetPost = {
+        id: optimisticId,
+        content,
+        createdAt: new Date(),
+        isLiked: false,
+        user: {
+          id: session?.user?.id || '',
+          username: session?.user?.name || '',
+          name: session?.user?.name || '',
+          profilePhoto: null,
+        },
+        visualMedia: visualMedia.map(vm => ({
+          ...vm,
+          processingStatus: vm.type === 'VIDEO' ? 'PROCESSING' : null,
+        })),
+        _count: {
+          postLikes: 0,
+          comments: 0,
+        },
+      };
+      
+      // Add optimistic post to cache
+      qc.setQueryData(['posts', optimisticId], optimisticPost);
+      
+      // Add to feed
+      qc.setQueriesData<InfiniteData<PostIds>>({ queryKey }, (oldData) => {
+        if (!oldData) return oldData;
+        
+        const newPosts = [{ id: optimisticId, commentsShown: false }, ...(oldData?.pages ?? []).flat()];
+        const newPages = chunk(newPosts, POSTS_PER_PAGE);
+        
+        return {
+          pages: newPages,
+          pageParams: [undefined, ...newPages.slice(0, -1).map((page) => page.at(-1)?.id)],
+        };
+      });
+      
+      return { optimisticId };
     },
-    onSuccess: (createdPost) => {
+    onSuccess: (createdPost, _, context) => {
       // Create a query for the created post
       qc.setQueryData(['posts', createdPost.id], createdPost);
 
-      // Update the inifinite query of `PostIds`
+      // Update the inifinite query of `PostIds` - replace optimistic post with real one
       qc.setQueriesData<InfiniteData<PostIds>>({ queryKey }, (oldData) => {
         if (!oldData) return oldData;
 
-        // Flatten the old pages first then prepend the newly created post
-        const newPosts = [{ id: createdPost.id, commentsShown: false }, ...(oldData?.pages ?? []).flat()];
+        // Flatten the old pages
+        const flatPosts = oldData.pages.flat();
+        
+        // Replace the optimistic post (negative ID) with the real post
+        const updatedPosts = flatPosts.map(post => 
+          post.id === context?.optimisticId ? { id: createdPost.id, commentsShown: false } : post
+        );
 
-        // Chunk the `newPosts` depending on the number of posts per page
-        const newPages = chunk(newPosts, POSTS_PER_PAGE);
+        // Chunk the updated posts
+        const newPages = chunk(updatedPosts, POSTS_PER_PAGE);
 
         const newPageParams = [
-          // The first `pageParam` is undefined as the initial page does not use a `pageParam`
           undefined,
-          // Create the new `pageParams`, it must contain the id of each page's (except last page's) last post
           ...newPages.slice(0, -1).map((page) => page.at(-1)?.id),
         ];
 
@@ -96,6 +140,11 @@ export function useWritePostMutations({
           pageParams: newPageParams,
         };
       });
+      
+      // Remove the optimistic post query and add the real one
+      if (context?.optimisticId) {
+        qc.removeQueries({ queryKey: ['posts', context.optimisticId] });
+      }
       
       // Revoke blob URLs after successful upload
       revokeVisualMediaObjectUrls(visualMedia);

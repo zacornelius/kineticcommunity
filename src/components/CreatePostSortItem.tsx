@@ -45,8 +45,13 @@ export function CreatePostSortItem({ type, url, mimeType, onRemove }: GetVisualM
           <img src={url} alt="" className="h-full w-full rounded-md object-cover" />
         ) : (
           // eslint-disable-next-line jsx-a11y/media-has-caption
-          <video className="z-10 h-full w-full rounded-md object-cover" preload="metadata">
-            <source src={url} type={mimeType || undefined} />
+          <video 
+            className="z-10 h-full w-full rounded-md object-cover" 
+            preload="metadata"
+            src={`${url}#t=0.1`}
+            muted
+            playsInline>
+            <source src={`${url}#t=0.1`} type={mimeType || undefined} />
           </video>
         )}
       </div>
