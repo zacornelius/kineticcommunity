@@ -10,6 +10,7 @@ import prisma from '@/lib/prisma/prisma';
 export async function POST(request: Request) {
   const [user] = await getServerUser();
   if (!user) {
+    console.log('[Push Subscribe] Unauthorized - no user');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -17,7 +18,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { endpoint, keys } = body;
 
+    console.log(`[Push Subscribe] User ${user.id} (${user.email}) subscribing`);
+    console.log(`[Push Subscribe] Endpoint: ${endpoint?.substring(0, 50)}...`);
+
     if (!endpoint || !keys?.p256dh || !keys?.auth) {
+      console.log('[Push Subscribe] Invalid subscription data');
       return NextResponse.json({ error: 'Invalid subscription data' }, { status: 400 });
     }
 
@@ -27,6 +32,7 @@ export async function POST(request: Request) {
     });
 
     if (existing) {
+      console.log('[Push Subscribe] Updating existing subscription');
       // Update existing subscription
       await prisma.pushSubscription.update({
         where: { endpoint },
@@ -37,6 +43,7 @@ export async function POST(request: Request) {
         },
       });
     } else {
+      console.log('[Push Subscribe] Creating new subscription');
       // Create new subscription
       await prisma.pushSubscription.create({
         data: {
@@ -48,9 +55,10 @@ export async function POST(request: Request) {
       });
     }
 
+    console.log('[Push Subscribe] Successfully subscribed');
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error subscribing to push notifications:', error);
+    console.error('[Push Subscribe] Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

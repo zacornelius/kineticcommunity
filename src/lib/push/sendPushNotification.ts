@@ -37,18 +37,24 @@ export async function sendPushNotification(userId: string, notification: PushNot
   }
 
   try {
+    console.log(`[Push] Sending notification to user ${userId}:`, notification.title);
+    
     // Get all push subscriptions for the user
     const subscriptions = await prisma.pushSubscription.findMany({
       where: { userId },
     });
 
+    console.log(`[Push] Found ${subscriptions.length} subscriptions for user ${userId}`);
+
     if (subscriptions.length === 0) {
+      console.log(`[Push] No subscriptions found for user ${userId}`);
       return; // User has no push subscriptions
     }
 
     // Send notification to all subscriptions
     const promises = subscriptions.map(async (subscription) => {
       try {
+        console.log(`[Push] Sending to endpoint: ${subscription.endpoint.substring(0, 50)}...`);
         await webpush.sendNotification(
           {
             endpoint: subscription.endpoint,
@@ -59,19 +65,21 @@ export async function sendPushNotification(userId: string, notification: PushNot
           },
           JSON.stringify(notification),
         );
+        console.log(`[Push] Successfully sent to endpoint`);
       } catch (error: any) {
+        console.error(`[Push] Error sending to endpoint:`, error.message, error.statusCode);
         // If subscription is invalid, remove it
         if (error.statusCode === 410 || error.statusCode === 404) {
+          console.log(`[Push] Removing invalid subscription`);
           await prisma.pushSubscription.delete({
             where: { endpoint: subscription.endpoint },
           });
-        } else {
-          console.error('Error sending push notification:', error);
         }
       }
     });
 
     await Promise.allSettled(promises);
+    console.log(`[Push] Finished sending notifications`);
   } catch (error) {
     console.error('Error in sendPushNotification:', error);
   }
