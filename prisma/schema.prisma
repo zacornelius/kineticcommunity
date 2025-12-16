@@ -114,7 +114,9 @@ model Post {
   comments       Comment[]
   dismissals     AnnouncementDismissal[]
 
+  @@index([userId, createdAt(sort: Desc)])
   @@index([isAnnouncement, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
 }
 
 model PostLike {
@@ -146,6 +148,9 @@ model Comment {
 
   // Self-referential relation
   replies Comment[] @relation("Replies")
+
+  @@index([postId, createdAt(sort: Desc)])
+  @@index([parentId, createdAt(sort: Desc)])
 }
 
 model CommentLike {
@@ -172,6 +177,9 @@ model VisualMedia {
   userId           String
   post             Post                     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId           Int
+
+  @@index([processingStatus])
+  @@index([fileName])
 }
 
 // This Activity model is similar to this approach: https://stackoverflow.com/a/1766371/8434369
@@ -196,6 +204,9 @@ model Activity {
   targetUserId         String
   isNotificationActive Boolean      @default(true)
   isNotificationRead   Boolean      @default(false)
+
+  @@index([targetUserId, isNotificationActive, createdAt(sort: Desc)])
+  @@index([targetUserId, isNotificationRead])
 }
 
 enum ActivityType {

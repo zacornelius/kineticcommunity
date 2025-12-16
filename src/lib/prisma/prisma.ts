@@ -12,12 +12,21 @@ let prisma: PrismaClient;
 
 if (typeof window === 'undefined') {
   if (process.env.NODE_ENV === 'production') {
-    prisma = new PrismaClient();
+    prisma = new PrismaClient({
+      log: ['error', 'warn'],
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
+    });
   } else {
     // @ts-expect-error `global` is a global object in the browser
     if (!global.prisma) {
       // @ts-expect-error `global` is a global object in the browser
-      global.prisma = new PrismaClient();
+      global.prisma = new PrismaClient({
+        log: ['query', 'error', 'warn'],
+      });
     }
     // @ts-expect-error `global` is a global object in the browser
     prisma = global.prisma;
