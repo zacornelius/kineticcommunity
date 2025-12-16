@@ -139,7 +139,7 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
         </div>
         <Button
           onClick={submitOtp}
-          disabled={loading || otp.length !== 6}
+          isDisabled={loading || otp.length !== 6}
           loading={loading}
           className="mb-4 w-full"
         >
