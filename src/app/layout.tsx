@@ -10,6 +10,7 @@ import { Providers } from '@/components/Providers';
 import { auth } from '@/auth';
 import React from 'react';
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
+import { PushNotificationPrompt } from '@/components/PushNotificationPrompt';
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -48,6 +49,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <Providers session={session}>
           {children}
           <ServiceWorkerRegistration />
+          <PushNotificationPrompt />
         </Providers>
       </body>
     </html>

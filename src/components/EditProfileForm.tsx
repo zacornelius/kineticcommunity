@@ -17,6 +17,7 @@ import { DatePicker } from './ui/DatePicker';
 import { Textarea } from './ui/Textarea';
 import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
+import { PushNotificationSettings } from './PushNotificationSettings';
 
 export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
   const [userData] = useSessionUserData();
@@ -232,6 +233,11 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           </Button>
         </div>
       </form>
+
+      {/* Push Notification Settings */}
+      <div className="mt-6">
+        <PushNotificationSettings />
+      </div>
     </div>
   );
 }
