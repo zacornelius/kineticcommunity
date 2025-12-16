@@ -71,17 +71,12 @@ export function PushNotificationPrompt() {
           />
 
           {/* Prompt Card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            style={{
-              position: 'fixed',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}
-            className="z-50 w-[90%] max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-center">
               <div className="rounded-full bg-primary/10 p-4">
                 <svg
@@ -113,7 +108,8 @@ export function PushNotificationPrompt() {
                 Enable
               </Button>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

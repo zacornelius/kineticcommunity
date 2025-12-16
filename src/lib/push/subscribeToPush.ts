@@ -23,18 +23,25 @@ export async function subscribeToPush(registration: ServiceWorkerRegistration): 
       }
 
       // Subscribe to push notifications
-      // VAPID public key should be passed from environment
-      const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-
+      // Fetch VAPID public key from API
+      const keyResponse = await fetch('/api/push/vapid-key');
+      if (!keyResponse.ok) {
+        console.error('Failed to fetch VAPID public key');
+        return null;
+      }
+      
+      const { publicKey: vapidPublicKey } = await keyResponse.json();
       if (!vapidPublicKey) {
         console.error('VAPID public key is not configured');
         return null;
       }
 
+      console.log('Subscribing to push with VAPID key...');
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
       });
+      console.log('Successfully subscribed to push notifications');
     }
 
     return subscription;
