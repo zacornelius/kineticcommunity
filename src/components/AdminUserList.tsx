@@ -92,13 +92,13 @@ export function AdminUserList({ searchQuery, onUserSelect, selectedUserId }: Adm
       <div className="mt-4 flex gap-2">
         <button
           onClick={() => setOffset(Math.max(0, offset - limit))}
-          disabled={offset === 0}
+          isDisabled={offset === 0}
           className="rounded-lg bg-secondary px-4 py-2 text-secondary-foreground hover:bg-secondary-accent disabled:cursor-not-allowed disabled:opacity-50">
           Previous
         </button>
         <button
           onClick={() => setOffset(offset + limit)}
-          disabled={offset + limit >= total}
+          isDisabled={offset + limit >= total}
           className="rounded-lg bg-secondary px-4 py-2 text-secondary-foreground hover:bg-secondary-accent disabled:cursor-not-allowed disabled:opacity-50">
           Next
         </button>

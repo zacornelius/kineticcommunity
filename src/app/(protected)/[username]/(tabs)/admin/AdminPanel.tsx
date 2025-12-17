@@ -144,7 +144,7 @@ export function AdminPanel({ userId }: { userId: string }) {
                       <Button
                         variant="destructive"
                         onClick={() => handleRemoveAdmin(user)}
-                        disabled={toggleAdminMutation.isPending}>
+                        isDisabled={toggleAdminMutation.isPending}>
                         Remove Admin
                       </Button>
                     )}

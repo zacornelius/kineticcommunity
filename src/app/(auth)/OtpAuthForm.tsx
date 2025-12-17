@@ -149,7 +149,7 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
         <div className="text-center">
           <button
             onClick={resendCode}
-            disabled={loading}
+            isDisabled={loading}
             className="text-sm text-blue-600 hover:underline disabled:opacity-50"
           >
             Resend Code
@@ -161,7 +161,7 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
               setOtp('');
               setOtpError(null);
             }}
-            disabled={loading}
+            isDisabled={loading}
             className="text-sm text-blue-600 hover:underline disabled:opacity-50"
           >
             Change Email

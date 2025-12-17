@@ -124,7 +124,7 @@ export function AnnouncementForm() {
 
       <Button
         type="submit"
-        disabled={(!content.trim() && visualMedia.length === 0) || createMutation.isPending}
+        isDisabled={(!content.trim() && visualMedia.length === 0) || createMutation.isPending}
         loading={createMutation.isPending}>
         Create Announcement
       </Button>

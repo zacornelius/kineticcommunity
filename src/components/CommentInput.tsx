@@ -60,7 +60,7 @@ export const CommentInput = forwardRef<HTMLTextAreaElement, CommentInputProps>(
           />
           <button
             onClick={handleSubmit}
-            disabled={!content.trim() || createCommentMutation.isPending}
+            isDisabled={!content.trim() || createCommentMutation.isPending}
             className="flex-shrink-0 text-primary disabled:opacity-40"
             aria-label="Send comment">
             <SvgSend className="h-5 w-5" />
