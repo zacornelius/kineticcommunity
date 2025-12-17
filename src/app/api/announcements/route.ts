@@ -123,7 +123,9 @@ export async function GET() {
     const transformedPosts = posts.map(post => ({
       ...post,
       visualMedia: post.visualMedia.map(media => ({
+        id: media.id,
         type: media.type,
+        fileName: media.fileName,
         url: fileNameToUrl(media.fileName) as string,
         mimeType: media.mimeType,
         thumbnailUrl: media.thumbnailUrl ? fileNameToUrl(media.thumbnailUrl) : null,
