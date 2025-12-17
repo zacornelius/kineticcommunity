@@ -111,10 +111,9 @@ export function AnnouncementForm() {
             {visualMedia.map((media) => (
               <CreatePostSortItem
                 key={media.id}
-                id={media.id}
-                file={media.file}
+                type={media.file.type.startsWith('image/') ? 'IMAGE' : 'VIDEO'}
+                url={media.src}
                 mimeType={media.file.type}
-                src={media.src}
                 onRemove={() => handleRemoveMedia(media.id)}
               />
             ))}
