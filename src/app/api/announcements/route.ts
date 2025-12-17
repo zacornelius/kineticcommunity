@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     // Import savePostFiles dynamically to avoid circular dependencies
     const { savePostFiles } = await import('@/lib/s3/savePostFiles');
-    const savedFiles = files.length > 0 ? await savePostFiles(files as Blob[]) : [];
+    const savedFiles = files.length > 0 ? await savePostFiles(files as any) : [];
 
     const post = await prisma.post.create({
       data: {
