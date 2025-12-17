@@ -161,7 +161,7 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
               setOtp('');
               setOtpError(null);
             }}
-            isDisabled={loading}
+            disabled={loading}
             className="text-sm text-blue-600 hover:underline disabled:opacity-50"
           >
             Change Email
