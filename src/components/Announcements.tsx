@@ -18,6 +18,7 @@ interface AnnouncementPost {
     id: number;
     type: VisualMediaType;
     fileName: string;
+    url: string;
     mimeType: string | null;
     processingStatus: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | null;
     thumbnailUrl: string | null;
