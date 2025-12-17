@@ -5,5 +5,12 @@ export const { auth: middleware } = NextAuth(authConfig);
 
 export const config = {
   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ['/((?!api|_next/static|_next/image|.png|.jpg|.jpeg|favicon.ico|manifest.json|sw.js).*)'],
+  // Only run on protected routes - exclude root, API, static files
+  matcher: [
+    '/home/:path*',
+    '/feed/:path*',
+    '/discover/:path*',
+    '/notifications/:path*',
+    '/:username((?!api|_next|login|register|terms|privacy-policy)[^/]+)/:path*',
+  ],
 };
