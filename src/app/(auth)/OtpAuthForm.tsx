@@ -183,7 +183,7 @@ export function OtpAuthForm({ mode }: { mode: 'login' | 'register' }) {
           autoFocus
         />
       </div>
-      <Button onClick={submitEmail} disabled={loading} loading={loading} className="mb-4 w-full">
+      <Button onClick={submitEmail} isDisabled={loading} loading={loading} className="mb-4 w-full">
         <LogInSquare />
         Continue with Email
       </Button>
