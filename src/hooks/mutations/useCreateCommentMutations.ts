@@ -9,7 +9,7 @@ export function useCreateCommentMutations() {
   const { notifyError } = useErrorNotifier();
 
   const createCommentMutation = useMutation({
-    mutationFn: async ({ postId, content }: { postId: number; content: string }) => {
+    mutationFn: async ({ postId, content, parentId }: { postId: number; content: string; parentId?: number }) => {
       const res = await fetch(`/api/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
@@ -17,6 +17,7 @@ export function useCreateCommentMutations() {
         },
         body: JSON.stringify({
           content,
+          parentId,
         }),
       });
 
