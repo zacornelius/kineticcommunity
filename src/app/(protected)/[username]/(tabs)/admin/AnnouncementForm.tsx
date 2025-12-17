@@ -110,11 +110,10 @@ export function AnnouncementForm() {
           <div className="mt-4 grid grid-cols-2 gap-2">
             {visualMedia.map((media) => (
               <CreatePostSortItem
-                key={media.id}
-                id={media.id}
-                file={media.file}
+                key={media.src}
+                type={media.file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO'}
+                url={media.src}
                 mimeType={media.file.type}
-                src={media.src}
                 onRemove={() => handleRemoveMedia(media.id)}
               />
             ))}
