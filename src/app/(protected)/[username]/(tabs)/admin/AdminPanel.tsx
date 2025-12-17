@@ -142,9 +142,9 @@ export function AdminPanel({ userId }: { userId: string }) {
                     </div>
                     {!isMasterAdmin && (
                       <Button
-                        mode="secondary"
+                        variant="destructive"
                         onClick={() => handleRemoveAdmin(user)}
-                        isDisabled={toggleAdminMutation.isPending}>
+                        disabled={toggleAdminMutation.isPending}>
                         Remove Admin
                       </Button>
                     )}

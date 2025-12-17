@@ -110,10 +110,11 @@ export function AnnouncementForm() {
           <div className="mt-4 grid grid-cols-2 gap-2">
             {visualMedia.map((media) => (
               <CreatePostSortItem
-                key={media.src}
-                type={media.file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO'}
-                url={media.src}
+                key={media.id}
+                id={media.id}
+                file={media.file}
                 mimeType={media.file.type}
+                src={media.src}
                 onRemove={() => handleRemoveMedia(media.id)}
               />
             ))}
@@ -123,7 +124,7 @@ export function AnnouncementForm() {
 
       <Button
         type="submit"
-        isDisabled={(!content.trim() && visualMedia.length === 0) || createMutation.isPending}
+        disabled={(!content.trim() && visualMedia.length === 0) || createMutation.isPending}
         loading={createMutation.isPending}>
         Create Announcement
       </Button>
