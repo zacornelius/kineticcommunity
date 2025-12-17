@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { endpoint, keys } = body;
 
-    console.log(`[Push Subscribe] User ${user.id} (${user.email}) subscribing`);
+    console.log(`[Push Subscribe] User ${user.id} subscribing`);
     console.log(`[Push Subscribe] Endpoint: ${endpoint?.substring(0, 50)}...`);
 
     if (!endpoint || !keys?.p256dh || !keys?.auth) {
