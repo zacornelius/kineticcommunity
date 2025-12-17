@@ -99,14 +99,14 @@ export function Announcements() {
           <div className="flex gap-2">
             <button
               onClick={handlePrevious}
-              isDisabled={currentIndex === 0}
+              disabled={currentIndex === 0}
               className="rounded-full p-2 hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               aria-label="Previous announcement">
               <ArrowChevronBack className="h-5 w-5" />
             </button>
             <button
               onClick={handleNext}
-              isDisabled={currentIndex === announcements.length - 1}
+              disabled={currentIndex === announcements.length - 1}
               className="rounded-full p-2 hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               aria-label="Next announcement">
               <ArrowChevronForward className="h-5 w-5" />
